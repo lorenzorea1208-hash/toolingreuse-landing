@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToolingReuse | Industrial Mold Assessment</title>
+  <meta name="description" content="ToolingReuse è in fase di validazione. Accedi al questionario riservato sugli stampi industriali non utilizzati." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --blue-950:#030B12;
+      --blue-900:#071827;
+      --blue-800:#0B2238;
+      --blue-700:#0E2F4F;
+      --steel-100:#F2F5F7;
+      --steel-200:#DCE3E8;
+      --steel-300:#B8C3CB;
+      --steel-400:#8D9AA4;
+      --accent:#7FA6CC;
+      --accent-bright:#BFD8F0;
+      --line:rgba(184,195,203,.26);
+      --glow:rgba(127,166,204,.42);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100%}
+    body{
+      font-family:Inter,Arial,sans-serif;
+      background:var(--blue-950);
+      color:var(--steel-100);
+      overflow:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+
+    .page{
+      min-height:100vh;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:34px;
+      background:
+        linear-gradient(90deg,rgba(3,11,18,.96) 0%,rgba(7,24,39,.76) 42%,rgba(7,24,39,.38) 100%),
+        url('HERO.png') center/cover no-repeat;
+    }
+
+    .page::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 50% 54%,rgba(127,166,204,.18),transparent 34%),
+        linear-gradient(180deg,rgba(3,11,18,.10),rgba(3,11,18,.88));
+      pointer-events:none;
+    }
+
+    .page::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image:
+        linear-gradient(rgba(184,195,203,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(184,195,203,.04) 1px,transparent 1px);
+      background-size:74px 74px;
+      mask-image:radial-gradient(circle at center,rgba(0,0,0,.8),transparent 76%);
+      pointer-events:none;
+    }
+
+    .scan-lines{
+      position:absolute;
+      inset:0;
+      background:repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 6px);
+      opacity:.18;
+      pointer-events:none;
+      mix-blend-mode:screen;
+    }
+
+    .lang{
+      position:absolute;
+      top:28px;
+      right:28px;
+      z-index:4;
+      display:flex;
+      gap:4px;
+      padding:4px;
+      border:1px solid var(--line);
+      background:rgba(3,11,18,.62);
+      backdrop-filter:blur(12px);
+      border-radius:5px;
+    }
+    .lang button{
+      border:0;
+      cursor:pointer;
+      padding:8px 12px;
+      background:transparent;
+      color:var(--steel-300);
+      border-radius:3px;
+      font-family:Rajdhani,Inter,sans-serif;
+      font-size:15px;
+      font-weight:700;
+      letter-spacing:.08em;
+    }
+    .lang button.active{
+      background:linear-gradient(135deg,#6F94BA,#315979);
+      color:#fff;
+    }
+
+    .content{
+      position:relative;
+      z-index:3;
+      width:min(1040px,100%);
+      text-align:center;
+      padding:56px 32px;
+    }
+
+    .brand{
+      font-family:Rajdhani,Inter,sans-serif;
+      font-size:64px;
+      line-height:.92;
+      font-weight:700;
+      letter-spacing:.055em;
+      text-transform:uppercase;
+      color:var(--steel-100);
+      text-shadow:0 0 40px rgba(127,166,204,.24);
+      margin-bottom:14px;
+    }
+    .brand span{color:#6F94BA}
+
+    .subtitle{
+      font-family:Rajdhani,Inter,sans-serif;
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--steel-300);
+      margin-bottom:64px;
+    }
+
+    .status{
+      font-family:Rajdhani,Inter,sans-serif;
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--accent-bright);
+      margin-bottom:18px;
+    }
+
+    .loader-wrap{
+      width:min(720px,100%);
+      margin:0 auto 18px;
+      padding:10px;
+      border:1px solid rgba(184,195,203,.36);
+      background:rgba(3,11,18,.54);
+      box-shadow:
+        0 0 0 1px rgba(127,166,204,.08),
+        0 28px 80px rgba(0,0,0,.42),
+        0 0 44px rgba(127,166,204,.12);
+      border-radius:12px;
+      backdrop-filter:blur(10px);
+    }
+
+    .loader{
+      position:relative;
+      height:42px;
+      overflow:hidden;
+      border-radius:8px;
+      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025));
+      border:1px solid rgba(184,195,203,.18);
+    }
+
+    .loader-fill{
+      position:absolute;
+      top:0;
+      left:-40%;
+      height:100%;
+      width:48%;
+      border-radius:7px;
+      background:linear-gradient(90deg,rgba(49,89,121,.25),#6F94BA,#DCE3E8,#6F94BA,rgba(49,89,121,.25));
+      box-shadow:0 0 32px var(--glow);
+      animation:loadingMove 2.45s cubic-bezier(.55,.05,.2,.95) infinite;
+    }
+
+    .loader-fill::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0,rgba(255,255,255,.22) 2px,transparent 2px,transparent 10px);
+      opacity:.28;
+    }
+
+    @keyframes loadingMove{
+      0%{left:-48%;width:42%}
+      45%{width:64%}
+      100%{left:106%;width:42%}
+    }
+
+    .loading-text{
+      font-family:Rajdhani,Inter,sans-serif;
+      font-size:17px;
+      font-weight:700;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:var(--steel-300);
+      margin-bottom:42px;
+    }
+    .loading-text::after{
+      content:"";
+      animation:dots 1.4s steps(4,end) infinite;
+    }
+    @keyframes dots{
+      0%{content:""}
+      25%{content:"."}
+      50%{content:".."}
+      75%,100%{content:"..."}
+    }
+
+    .microcopy{
+      max-width:580px;
+      margin:0 auto 30px;
+      color:var(--steel-300);
+      font-size:15px;
+      line-height:1.7;
+    }
+
+    .cta{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:54px;
+      padding:15px 30px;
+      border-radius:5px;
+      font-family:Rajdhani,Inter,sans-serif;
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.18);
+      background:linear-gradient(135deg,#6F94BA,#315979);
+      box-shadow:0 20px 58px rgba(11,34,56,.55),0 0 24px rgba(127,166,204,.18);
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .cta:hover{
+      transform:translateY(-2px);
+      box-shadow:0 24px 70px rgba(11,34,56,.65),0 0 36px rgba(127,166,204,.28);
+    }
+
+    .footer{
+      position:absolute;
+      z-index:4;
+      left:28px;
+      right:28px;
+      bottom:22px;
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      color:var(--steel-400);
+      font-size:13px;
+    }
+    .footer a:hover{color:var(--accent-bright)}
+
+    @media(max-width:760px){
+      body{overflow:auto}
+      .page{padding:24px 18px;align-items:center}
+      .lang{top:18px;right:18px}
+      .content{padding:82px 0 72px}
+      .brand{font-size:44px}
+      .subtitle{font-size:15px;margin-bottom:56px}
+      .status{font-size:15px}
+      .loader{height:34px}
+      .loading-text{font-size:14px;margin-bottom:34px}
+      .microcopy{font-size:14px}
+      .footer{position:absolute;left:18px;right:18px;bottom:16px;font-size:12px}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="scan-lines"></div>
+
+    <div class="lang" aria-label="Selezione lingua">
+      <button type="button" class="active" data-lang="it">IT</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+
+    <section class="content" aria-label="ToolingReuse in sviluppo">
+      <div class="brand">Tooling<span>Reuse</span></div>
+      <div class="subtitle" data-i18n="subtitle">Industrial Mold Assessment</div>
+
+      <div class="status" data-i18n="status">Project loading</div>
+
+      <div class="loader-wrap" aria-label="Loading">
+        <div class="loader">
+          <div class="loader-fill"></div>
+        </div>
+      </div>
+
+      <div class="loading-text" data-i18n="loading">Industrial survey loading</div>
+
+      <p class="microcopy" data-i18n="microcopy">Stiamo raccogliendo informazioni sugli stampi industriali non utilizzati. Il questionario è il primo canale di validazione.</p>
+
+      <a class="cta" data-i18n="cta" href="https://forms.gle/Vnsks5SggH9p7Rd38" target="_blank" rel="noopener">Accedi al questionario →</a>
+    </section>
+
+    <footer class="footer">
+      <span>© ToolingReuse</span>
+      <a href="mailto:info@toolingreuse.com">info@toolingreuse.com</a>
+    </footer>
+  </main>
+
+  <script>
+    const translations = {
+      it: {
+        subtitle: 'Industrial Mold Assessment',
+        status: 'Project loading',
+        loading: 'Industrial survey loading',
+        microcopy: 'Stiamo raccogliendo informazioni sugli stampi industriali non utilizzati. Il questionario è il primo canale di validazione.',
+        cta: 'Accedi al questionario →'
+      },
+      en: {
+        subtitle: 'Industrial Mold Assessment',
+        status: 'Project loading',
+        loading: 'Industrial survey loading',
+        microcopy: 'We are collecting information on unused industrial molds. The questionnaire is the first validation channel.',
+        cta: 'Open the questionnaire →'
+      }
+    };
+
+    function setLanguage(lang){
+      const t = translations[lang];
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t[el.dataset.i18n]);
+      document.querySelectorAll('.lang button').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+    }
+
+    document.querySelectorAll('.lang button').forEach(button => {
+      button.addEventListener('click', () => setLanguage(button.dataset.lang));
+    });
+  </script>
+</body>
+</html>
