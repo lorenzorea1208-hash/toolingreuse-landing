@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToolingReuse | Apertura questionario…</title>
+  <meta name="robots" content="noindex">
+  <!-- Fallback se JavaScript è disattivato -->
+  <meta http-equiv="refresh" content="2;url=https://forms.gle/Vnsks5SggH9p7Rd38">
+  <style>
+    body{
+      margin:0;min-height:100vh;
+      display:flex;align-items:center;justify-content:center;
+      background:#030B12;color:#B8C3CB;
+      font-family:Inter,Arial,sans-serif;text-align:center;padding:24px;
+    }
+    .msg{font-size:15px;line-height:1.7}
+    a{color:#7FA6CC}
+  </style>
+</head>
+<body>
+  <div class="msg">
+    Apertura del questionario in corso…<br>
+    <a href="https://forms.gle/Vnsks5SggH9p7Rd38">Clicca qui se non vieni reindirizzato automaticamente</a>
+  </div>
+
+  <!-- Vercel Web Analytics: registra la Page View (= click sulla CTA) prima del redirect -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script>
+    // Piccolo ritardo per dare tempo all'analytics di registrare la visita, poi rimbalza al form
+    setTimeout(function () {
+      window.location.replace('https://forms.gle/Vnsks5SggH9p7Rd38');
+    }, 700);
+  </script>
+</body>
+</html>
