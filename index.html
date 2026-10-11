@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ToolingReuse | Industrial Mold Assessment</title>
-  <meta name="description" content="ToolingReuse è in fase di validazione. Accedi al questionario riservato sugli stampi industriali non utilizzati." />
+  <title>ToolingReuse | Censimento degli stampi fermi</title>
+  <meta name="description" content="ToolingReuse connette chi ha stampi fermi con chi cerca capacità produttiva o uno stampo. Si parte da un censimento gratuito: da 1 a 30 stampi." />
 
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -13,340 +13,2098 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
+    @property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+
+    /* Palette v3: stessa identità blu/acciaio, toni più luminosi */
     :root{
-      --blue-950:#030B12;
-      --blue-900:#071827;
-      --blue-800:#0B2238;
-      --blue-700:#0E2F4F;
+      --bg:#0E2134;
+      --bg-2:#132A40;
+      --surface:#183450;
+      --surface-2:#1E3E5E;
       --steel-100:#F2F5F7;
       --steel-200:#DCE3E8;
-      --steel-300:#B8C3CB;
-      --steel-400:#8D9AA4;
+      --steel-300:#BCC7CF;
+      --steel-400:#97A4AE;
       --accent:#7FA6CC;
+      --accent-mid:#6F94BA;
+      --accent-dark:#315979;
       --accent-bright:#BFD8F0;
-      --line:rgba(184,195,203,.26);
-      --glow:rgba(127,166,204,.42);
+      --err:#F2A3A3;
+      --line:rgba(184,195,203,.18);
+      --line-strong:rgba(184,195,203,.34);
+      --glass:rgba(14,33,52,.6);
+      --cta:linear-gradient(135deg,#7AA0C6,#3A678C);
+      --font-head:Rajdhani,Inter,sans-serif;
+      --font-sans:Inter,Arial,sans-serif;
+      --font-mono:'JetBrains Mono',monospace;
+      --ease:cubic-bezier(.2,.8,.2,1);
+      --wrap:1200px;
     }
 
     *{box-sizing:border-box;margin:0;padding:0}
-    html,body{min-height:100%}
+    html{scroll-behavior:smooth;scroll-padding-top:80px}
     body{
-      font-family:Inter,Arial,sans-serif;
-      background:var(--blue-950);
+      font-family:var(--font-sans);
+      background:var(--bg);
       color:var(--steel-100);
-      overflow:hidden;
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
     }
     a{color:inherit;text-decoration:none}
+    svg{display:block;max-width:100%}
+    button,input,select{font:inherit;color:inherit}
+    ::selection{background:rgba(127,166,204,.35);color:#fff}
 
-    .page{
-      min-height:100vh;
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:34px;
-      background:
-        linear-gradient(90deg,rgba(3,11,18,.96) 0%,rgba(7,24,39,.76) 42%,rgba(7,24,39,.38) 100%),
-        url('HERO.png') center/cover no-repeat;
-    }
+    .wrap{width:min(var(--wrap),100% - 48px);margin:0 auto}
 
-    .page::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(circle at 50% 54%,rgba(127,166,204,.18),transparent 34%),
-        linear-gradient(180deg,rgba(3,11,18,.10),rgba(3,11,18,.88));
-      pointer-events:none;
-    }
-
-    .page::after{
-      content:"";
-      position:absolute;
-      inset:0;
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
       background-image:
-        linear-gradient(rgba(184,195,203,.04) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(184,195,203,.04) 1px,transparent 1px);
+        linear-gradient(rgba(184,195,203,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(184,195,203,.045) 1px,transparent 1px);
       background-size:74px 74px;
-      mask-image:radial-gradient(circle at center,rgba(0,0,0,.8),transparent 76%);
-      pointer-events:none;
     }
 
-    .scan-lines{
-      position:absolute;
-      inset:0;
-      background:repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 6px);
-      opacity:.18;
-      pointer-events:none;
-      mix-blend-mode:screen;
+    .brackets{
+      --bc:rgba(127,166,204,.8);--bl:14px;
+      background-image:
+        linear-gradient(var(--bc),var(--bc)),linear-gradient(var(--bc),var(--bc)),
+        linear-gradient(var(--bc),var(--bc)),linear-gradient(var(--bc),var(--bc)),
+        linear-gradient(var(--bc),var(--bc)),linear-gradient(var(--bc),var(--bc)),
+        linear-gradient(var(--bc),var(--bc)),linear-gradient(var(--bc),var(--bc));
+      background-repeat:no-repeat;
+      background-size:
+        var(--bl) 1px,1px var(--bl),var(--bl) 1px,1px var(--bl),
+        var(--bl) 1px,1px var(--bl),var(--bl) 1px,1px var(--bl);
+      background-position:
+        top left,top left,top right,top right,
+        bottom left,bottom left,bottom right,bottom right;
     }
 
-    .lang{
-      position:absolute;
-      top:28px;
-      right:28px;
-      z-index:4;
-      display:flex;
-      gap:4px;
-      padding:4px;
-      border:1px solid var(--line);
-      background:rgba(3,11,18,.62);
-      backdrop-filter:blur(12px);
-      border-radius:5px;
-    }
-    .lang button{
-      border:0;
-      cursor:pointer;
-      padding:8px 12px;
-      background:transparent;
-      color:var(--steel-300);
-      border-radius:3px;
-      font-family:Rajdhani,Inter,sans-serif;
-      font-size:15px;
-      font-weight:700;
-      letter-spacing:.08em;
-    }
-    .lang button.active{
-      background:linear-gradient(135deg,#6F94BA,#315979);
-      color:#fff;
-    }
+    /* ── Header ── */
+    .header{position:fixed;top:0;left:0;right:0;z-index:50;border-bottom:1px solid transparent;transition:background .35s ease,border-color .35s ease}
+    .header.scrolled{background:rgba(14,33,52,.84);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+    .header .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;height:70px;transition:height .35s ease}
+    .header.scrolled .wrap{height:60px}
+    .progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;pointer-events:none}
+    .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-dark),var(--accent-bright));transform-origin:left;transform:scaleX(0)}
+    .brand{font-family:var(--font-head);font-size:24px;font-weight:700;letter-spacing:.055em;text-transform:uppercase;white-space:nowrap}
+    .brand span{color:var(--accent-mid)}
+    .nav{display:flex;align-items:center;gap:30px}
+    .nav a:not(.btn){position:relative;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel-300);transition:color .2s ease}
+    .nav a:not(.btn)::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--accent-bright);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
+    .nav a:not(.btn):hover,.nav a.active{color:var(--accent-bright)}
+    .nav a:not(.btn):hover::after,.nav a.active::after{transform:scaleX(1)}
 
-    .content{
-      position:relative;
-      z-index:3;
-      width:min(1040px,100%);
-      text-align:center;
-      padding:56px 32px;
+    /* ── Bottoni ── */
+    .btn{
+      position:relative;display:inline-flex;align-items:center;justify-content:center;gap:12px;
+      min-height:52px;padding:14px 28px;border-radius:5px;border:0;
+      font-family:var(--font-head);font-size:16px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+      transition:transform .25s var(--ease),box-shadow .25s ease,border-color .25s ease,color .25s ease,opacity .2s ease;
+      cursor:pointer;overflow:hidden;
     }
+    .btn-primary{color:#fff;background:var(--cta);border:1px solid rgba(255,255,255,.2);box-shadow:0 16px 44px rgba(5,16,28,.45),0 0 22px rgba(127,166,204,.18)}
+    .btn-primary::before{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.3),transparent);transform:skewX(-18deg);transition:left .7s var(--ease)}
+    .btn-primary:hover::before{left:120%}
+    .btn-primary:hover{box-shadow:0 20px 54px rgba(5,16,28,.55),0 0 36px rgba(127,166,204,.34)}
+    .btn .arr{display:inline-block;transition:transform .3s var(--ease)}
+    .btn:hover .arr{transform:translateX(5px)}
+    .btn-ghost{color:var(--steel-200);border:1px solid var(--line-strong);background:rgba(14,33,52,.4)}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent-bright)}
+    .btn-sm{min-height:40px;padding:9px 18px;font-size:14px}
+    .btn:disabled{opacity:.55;cursor:wait}
+    .btn:focus-visible,.opt-chip:focus-visible,.seg button:focus-visible,.reset:focus-visible,.add-mold:focus-visible,.mold-rm:focus-visible,.sum-edit:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
 
-    .brand{
-      font-family:Rajdhani,Inter,sans-serif;
-      font-size:64px;
-      line-height:.92;
-      font-weight:700;
-      letter-spacing:.055em;
-      text-transform:uppercase;
-      color:var(--steel-100);
-      text-shadow:0 0 40px rgba(127,166,204,.24);
-      margin-bottom:14px;
-    }
-    .brand span{color:#6F94BA}
+    /* ═════════ HERO ═════════ */
+    .hero{--mx:70%;--my:40%;position:relative;padding:150px 0 0;background:linear-gradient(180deg,#183A58,var(--bg) 88%);overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(620px circle at var(--mx) var(--my),rgba(127,166,204,.18),transparent 65%)}
+    .hero-inner{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-bright);padding:7px 14px 7px 12px;border:1px solid var(--line-strong);border-radius:30px;background:rgba(14,33,52,.45);margin-bottom:28px}
+    .dot{position:relative;width:8px;height:8px;border-radius:50%;background:var(--accent-bright)}
+    .dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--accent-bright);animation:ping 2.2s ease-out infinite}
+    @keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.2);opacity:0}}
 
-    .subtitle{
-      font-family:Rajdhani,Inter,sans-serif;
-      font-size:20px;
-      font-weight:700;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      color:var(--steel-300);
-      margin-bottom:64px;
-    }
+    .hero h1{font-family:var(--font-head);font-weight:700;font-size:clamp(40px,5.2vw,68px);line-height:1;letter-spacing:.015em;text-transform:uppercase;color:var(--steel-100);margin-bottom:28px}
+    .hero h1 .line{display:block;overflow:hidden;padding-bottom:.05em}
+    .hero h1 .line.sub{font-size:.56em;color:var(--steel-300);letter-spacing:.06em;margin-top:.35em}
+    .hero h1 .line > span{display:inline-block;transform:translateY(108%);animation:rise 1s var(--ease) forwards;animation-delay:calc(var(--i) * .1s + .15s)}
+    @keyframes rise{to{transform:none}}
+    .hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent-bright),var(--accent) 60%,var(--accent-bright));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 6s linear infinite}
+    @keyframes sheen{to{background-position:-200% 0}}
 
-    .status{
-      font-family:Rajdhani,Inter,sans-serif;
-      font-size:18px;
-      font-weight:700;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      color:var(--accent-bright);
-      margin-bottom:18px;
-    }
+    .fade-up{opacity:0;transform:translateY(16px);animation:fadeUp .9s var(--ease) forwards;animation-delay:var(--d,0s)}
+    @keyframes fadeUp{to{opacity:1;transform:none}}
+    @keyframes fadeIn{to{opacity:1}}
 
-    .loader-wrap{
-      width:min(720px,100%);
-      margin:0 auto 18px;
-      padding:10px;
-      border:1px solid rgba(184,195,203,.36);
-      background:rgba(3,11,18,.54);
-      box-shadow:
-        0 0 0 1px rgba(127,166,204,.08),
-        0 28px 80px rgba(0,0,0,.42),
-        0 0 44px rgba(127,166,204,.12);
-      border-radius:12px;
-      backdrop-filter:blur(10px);
-    }
+    .hero-lead{font-size:18.5px;color:var(--steel-300);max-width:560px;margin-bottom:38px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:48px}
+    .facts{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;border-top:1px solid var(--line);padding-top:24px;max-width:600px}
+    .fact{padding:0 30px;border-left:1px solid var(--line)}
+    .fact:first-child{padding-left:0;border-left:0}
+    .fact b{display:block;font-family:var(--font-head);font-size:30px;font-weight:700;color:var(--steel-100);letter-spacing:.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+    .fact > span{font-size:13px;color:var(--steel-400)}
 
-    .loader{
-      position:relative;
-      height:42px;
-      overflow:hidden;
-      border-radius:8px;
-      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025));
-      border:1px solid rgba(184,195,203,.18);
-    }
+    /* Blueprint */
+    .bp{position:relative;border:1px solid var(--line-strong);border-radius:12px;background-color:rgba(14,33,52,.6);padding:22px 22px 16px;box-shadow:0 36px 80px rgba(5,16,28,.45),0 0 60px rgba(127,166,204,.1);transition:transform .4s var(--ease)}
+    .bp-head,.bp-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--font-mono);font-size:11px;color:var(--steel-400);letter-spacing:.06em;text-transform:uppercase}
+    .bp-head{padding-bottom:12px;margin-bottom:12px;border-bottom:1px dashed var(--line-strong)}
+    .bp-foot{padding-top:12px;margin-top:10px;border-top:1px dashed var(--line-strong)}
+    .bp-head b,.bp-foot b{color:var(--accent-bright);font-weight:500;font-variant-numeric:tabular-nums}
+    .state{display:inline-flex;align-items:center;gap:8px}
+    .state i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.6s steps(2,start) infinite}
+    @keyframes blink{50%{opacity:.15}}
+    .bp-stage{position:relative;overflow:hidden;border-radius:4px;cursor:crosshair}
+    .xh-v,.xh-h{position:absolute;left:0;top:0;pointer-events:none;background:rgba(191,216,240,.45)}
+    .xh-v{width:1px;height:100%}
+    .xh-h{height:1px;width:100%}
+    .xh-c{position:absolute;left:-9px;top:-9px;width:18px;height:18px;pointer-events:none;border:1px solid var(--accent-bright);border-radius:50%;box-shadow:0 0 14px rgba(191,216,240,.5)}
+    .scan{position:absolute;left:0;right:0;top:0;height:70px;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(127,166,204,.16));border-bottom:1px solid rgba(191,216,240,.6);animation:scan 5s cubic-bezier(.5,0,.5,1) infinite}
+    @keyframes scan{0%{transform:translateY(-80px)}100%{transform:translateY(420px)}}
+    .bp-stroke{fill:none;stroke:#7FA6CC;stroke-width:1.4}
+    .bp-soft{fill:none;stroke:rgba(127,166,204,.5);stroke-width:1}
+    .bp-dash{fill:none;stroke:rgba(191,216,240,.6);stroke-width:1;stroke-dasharray:4 4}
+    .bp-fill{fill:rgba(127,166,204,.09);stroke:#7FA6CC;stroke-width:1.4}
+    .bp-text{font-family:'JetBrains Mono',monospace;font-size:10.5px;fill:#97A4AE;letter-spacing:.04em}
+    .bp-text-hi{font-family:'JetBrains Mono',monospace;font-size:10.5px;fill:#BFD8F0;letter-spacing:.04em}
+    .bp-dot{fill:#BFD8F0}
+    .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.8s cubic-bezier(.6,.1,.2,1) forwards;animation-delay:var(--d,0s)}
+    .bp-fill.draw{fill-opacity:0;animation:draw 1.8s cubic-bezier(.6,.1,.2,1) forwards,fillIn .9s ease forwards;animation-delay:var(--d,0s),calc(var(--d,0s) + 1.1s)}
+    @keyframes draw{to{stroke-dashoffset:0}}
+    @keyframes fillIn{to{fill-opacity:1}}
+    .fade,.anno{opacity:0;animation:fadeIn .7s ease forwards;animation-delay:var(--d,0s)}
+    .flick{animation:flick .45s steps(3) 1}
+    @keyframes flick{0%{opacity:1}33%{opacity:.1}66%{opacity:.9}100%{opacity:1}}
 
-    .loader-fill{
-      position:absolute;
-      top:0;
-      left:-40%;
-      height:100%;
-      width:48%;
-      border-radius:7px;
-      background:linear-gradient(90deg,rgba(49,89,121,.25),#6F94BA,#DCE3E8,#6F94BA,rgba(49,89,121,.25));
-      box-shadow:0 0 32px var(--glow);
-      animation:loadingMove 2.45s cubic-bezier(.55,.05,.2,.95) infinite;
-    }
+    .ticker{position:relative;margin-top:96px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(19,42,64,.7);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+    .ticker-track{display:flex;width:max-content;animation:ticker 45s linear infinite}
+    .ticker:hover .ticker-track{animation-play-state:paused}
+    .ticker-item{display:flex;align-items:center;gap:28px;padding:17px 14px;margin-right:14px;font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--steel-400);white-space:nowrap}
+    .ticker-item::after{content:"";width:6px;height:6px;border:1px solid var(--accent);transform:rotate(45deg)}
+    @keyframes ticker{to{transform:translateX(-50%)}}
 
-    .loader-fill::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0,rgba(255,255,255,.22) 2px,transparent 2px,transparent 10px);
-      opacity:.28;
-    }
+    /* ═════════ SEZIONI ═════════ */
+    section.block{position:relative;padding:130px 0;border-bottom:1px solid var(--line);overflow:hidden;overflow:clip}
+    section.block.alt{background:linear-gradient(180deg,var(--bg-2),var(--bg))}
+    .sec-bg{position:absolute;right:-.04em;top:60px;z-index:0;pointer-events:none;user-select:none;font-family:var(--font-head);font-weight:700;line-height:.8;font-size:clamp(170px,24vw,340px);letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1px rgba(127,166,204,.14);will-change:transform}
+    section.block > .wrap{position:relative;z-index:1}
+    .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:24px;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+    .sec-head::after{content:"";width:90px;height:1px;background:linear-gradient(90deg,var(--accent),transparent);transform-origin:left;transition:transform 1s var(--ease) .25s}
+    .js .sec-head.reveal:not(.in)::after{transform:scaleX(0)}
+    .sec-num{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--accent-bright);border:1px solid rgba(127,166,204,.5);border-radius:3px;padding:3px 8px;letter-spacing:.04em}
+    h2{font-family:var(--font-head);font-weight:700;font-size:clamp(32px,4vw,52px);line-height:1.04;letter-spacing:.015em;text-transform:uppercase;color:var(--steel-100);max-width:860px;margin-bottom:26px;text-wrap:balance}
+    .lead{font-size:18.5px;color:var(--steel-300);max-width:760px}
 
-    @keyframes loadingMove{
-      0%{left:-48%;width:42%}
-      45%{width:64%}
-      100%{left:106%;width:42%}
-    }
+    .js .reveal{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--rd,0s)}
+    .js .reveal.in{opacity:1;transform:none}
 
-    .loading-text{
-      font-family:Rajdhani,Inter,sans-serif;
-      font-size:17px;
-      font-weight:700;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color:var(--steel-300);
-      margin-bottom:42px;
-    }
-    .loading-text::after{
-      content:"";
-      animation:dots 1.4s steps(4,end) infinite;
-    }
-    @keyframes dots{
-      0%{content:""}
-      25%{content:"."}
-      50%{content:".."}
-      75%,100%{content:"..."}
-    }
+    /* 01 Chi siamo */
+    .about{display:grid;grid-template-columns:1.3fr .7fr;gap:72px;align-items:start}
+    .about p{color:var(--steel-300);font-size:17.5px}
+    .about p + p{margin-top:18px}
+    .about strong{color:var(--steel-100);font-weight:600;background:linear-gradient(var(--accent),var(--accent)) no-repeat 0 100%/100% 1px;transition:background-size 1.2s var(--ease) .5s}
+    .js .reveal:not(.in) strong{background-size:0 1px}
+    .case{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:36px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+    .case div{background:var(--bg-2);padding:22px 24px}
+    .case b{display:block;font-family:var(--font-head);font-size:34px;font-weight:700;line-height:1;color:var(--accent-bright);letter-spacing:.02em;margin-bottom:6px}
+    .case div > span{font-size:13.5px;color:var(--steel-400)}
+    .panel{position:relative;border:1px solid var(--line-strong);border-radius:10px;background-color:rgba(24,52,80,.55);padding:26px}
+    .panel-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--steel-400);padding-bottom:12px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+    .person{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}
+    .person:last-of-type{border-bottom:0}
+    .avatar{position:relative;width:46px;height:46px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:700;font-size:16px;letter-spacing:.04em;color:var(--accent-bright);background:rgba(127,166,204,.12)}
+    .avatar::before{content:"";position:absolute;inset:-1px;border-radius:50%;background:conic-gradient(from var(--ang),var(--accent-bright),rgba(127,166,204,.15) 30%,rgba(127,166,204,.15) 70%,var(--accent-bright));-webkit-mask:radial-gradient(circle,transparent 21.5px,#000 22.5px);mask:radial-gradient(circle,transparent 21.5px,#000 22.5px);animation:spin 5s linear infinite}
+    @keyframes spin{to{--ang:360deg}}
+    .person b{display:block;font-weight:600;color:var(--steel-100);font-size:15px}
+    .person span{font-size:13px;color:var(--steel-400)}
+    .panel-foot{margin-top:14px;padding-top:16px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--steel-300)}
+    .panel-foot svg{flex-shrink:0;margin-top:3px}
 
-    .microcopy{
-      max-width:580px;
-      margin:0 auto 30px;
-      color:var(--steel-300);
-      font-size:15px;
-      line-height:1.7;
-    }
+    /* 02 Obiettivo */
+    .match{display:grid;grid-template-columns:1fr 250px 1fr;align-items:center;margin-top:60px}
+    .match-col{position:relative;border:1px solid var(--line-strong);border-radius:10px;background:rgba(14,33,52,.6);padding:28px 28px 22px;transition:border-color .3s ease,transform .4s var(--ease)}
+    .match-col:hover{border-color:rgba(127,166,204,.6);transform:translateY(-3px)}
+    .match-kicker{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+    .match-title{font-family:var(--font-head);font-size:23px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--steel-100);line-height:1.15;margin-bottom:16px}
+    .match-col ul{list-style:none}
+    .match-col li{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-top:1px solid var(--line);font-size:15px;color:var(--steel-300);transition:color .2s ease,padding-left .3s var(--ease)}
+    .match-col li:hover{color:var(--steel-100);padding-left:4px}
+    .match-col li::before{content:"";width:6px;height:6px;flex-shrink:0;transform:translateY(-2px) rotate(45deg);border:1px solid var(--accent)}
+    .match-hub{position:relative;height:100%;min-height:200px;display:flex;align-items:center;justify-content:center}
+    .flow{position:absolute;left:0;right:0;top:50%;height:1px;transform:translateY(-.5px)}
+    .flow::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(127,166,204,.75) 0 6px,transparent 6px 12px);animation:flowX 1.2s linear infinite}
+    @keyframes flowX{to{background-position:24px 0}}
+    .pulse{position:absolute;top:-3px;left:0;width:7px;height:7px;border-radius:50%;background:var(--accent-bright);box-shadow:0 0 12px 3px rgba(191,216,240,.6);animation:travelX 2.8s cubic-bezier(.45,0,.55,1) infinite;animation-delay:var(--pd,0s)}
+    @keyframes travelX{0%{left:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{left:calc(100% - 7px);opacity:0}}
+    .hub-node{position:relative;z-index:1;width:176px;padding:20px 14px;text-align:center;border:1px solid var(--accent);border-radius:10px;background-color:var(--bg-2);box-shadow:0 0 0 6px var(--bg),0 0 40px rgba(127,166,204,.22);animation:hubGlow 3s ease-in-out infinite}
+    @keyframes hubGlow{50%{box-shadow:0 0 0 6px var(--bg),0 0 60px rgba(127,166,204,.42)}}
+    .hub-node b{display:block;font-family:var(--font-head);font-size:18px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--steel-100)}
+    .hub-node b span{color:var(--accent-mid)}
+    .hub-node small{display:block;margin-top:4px;font-size:12px;color:var(--steel-400);line-height:1.4}
+    .quote{position:relative;margin-top:64px;padding:30px 34px;max-width:940px;border-left:2px solid var(--accent);background:linear-gradient(90deg,rgba(127,166,204,.11),transparent 80%);font-family:var(--font-head);font-size:clamp(21px,2.4vw,29px);font-weight:600;line-height:1.28;letter-spacing:.015em;color:var(--steel-200)}
+    .quote em{font-style:normal;color:var(--accent-bright);background:linear-gradient(var(--accent-bright),var(--accent-bright)) no-repeat 0 100%/100% 2px;transition:background-size 1.2s var(--ease) .5s}
+    .js .quote.reveal:not(.in) em{background-size:0 2px}
 
-    .cta{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:54px;
-      padding:15px 30px;
-      border-radius:5px;
-      font-family:Rajdhani,Inter,sans-serif;
-      font-size:18px;
-      font-weight:700;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:#fff;
-      border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(135deg,#6F94BA,#315979);
-      box-shadow:0 20px 58px rgba(11,34,56,.55),0 0 24px rgba(127,166,204,.18);
-      transition:transform .2s ease, box-shadow .2s ease;
-    }
-    .cta:hover{
-      transform:translateY(-2px);
-      box-shadow:0 24px 70px rgba(11,34,56,.65),0 0 36px rgba(127,166,204,.28);
-    }
+    /* 03 Cosa si ottiene */
+    .config{margin-top:52px;border:1px solid var(--line-strong);border-radius:12px;background-color:rgba(19,42,64,.85);padding:26px 28px}
+    .config-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+    .config-title{font-family:var(--font-head);font-size:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--steel-100)}
+    .config-note{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel-400)}
+    .questions{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .q{transition:opacity .3s ease}
+    .q.off{opacity:.35}
+    .q label{display:block;font-size:14px;color:var(--steel-300);margin-bottom:10px}
+    .seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:6px;padding:3px;background:rgba(14,33,52,.6)}
+    .seg button{border:0;background:transparent;cursor:pointer;min-width:64px;padding:8px 16px;border-radius:4px;font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--steel-300);transition:background .25s ease,color .25s ease}
+    .seg button:hover:not(:disabled){color:var(--steel-100)}
+    .seg button[aria-pressed="true"]{background:var(--cta);color:#fff;box-shadow:0 0 16px rgba(127,166,204,.25)}
+    .seg button:disabled{cursor:not-allowed}
+    .result{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px dashed var(--line-strong);font-size:15px;color:var(--steel-300);min-height:44px}
+    .result b{color:var(--accent-bright);font-weight:600}
+    .reset{margin-left:auto;border:0;background:none;cursor:pointer;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel-400)}
+    .reset:hover{color:var(--accent-bright)}
+    .solutions{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:22px}
+    .sol{--x:50%;--y:50%;position:relative;border:1px solid var(--line-strong);border-radius:12px;background:rgba(24,52,80,.5);padding:30px 30px 28px;overflow:hidden;transition:border-color .35s ease,opacity .45s ease,filter .45s ease,transform .45s var(--ease),box-shadow .45s ease}
+    .sol::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(380px circle at var(--x) var(--y),rgba(127,166,204,.18),transparent 60%);opacity:0;transition:opacity .35s ease}
+    .sol:hover::before{opacity:1}
+    .sol:hover{border-color:rgba(127,166,204,.55)}
+    .sol > *{position:relative}
+    .sol.is-match{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 22px 54px rgba(5,16,28,.4),0 0 44px rgba(127,166,204,.22)}
+    .js .sol.reveal.in.is-match{transform:translateY(-4px)}
+    .sol.is-dim{opacity:.38;filter:saturate(.5)}
+    .sol-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .sol-icon{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(127,166,204,.45);background:rgba(127,166,204,.1);transition:transform .5s var(--ease),background .3s ease}
+    .sol:hover .sol-icon,.sol.is-match .sol-icon{transform:rotate(-6deg) scale(1.06);background:rgba(127,166,204,.2)}
+    .sol-tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-bright);border:1px solid var(--line-strong);border-radius:20px;padding:4px 11px;white-space:nowrap}
+    .sol-badge{display:none;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--cta);border-radius:20px;padding:4px 11px;white-space:nowrap}
+    .sol.is-match .sol-badge{display:inline-block}
+    .sol.is-match .sol-tag{display:none}
+    .sol h3{font-family:var(--font-head);font-size:24px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--steel-100);line-height:1.15;margin-bottom:10px}
+    .sol p{font-size:15.5px;color:var(--steel-300)}
+    .sol-for{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--steel-400)}
+    .sol-for b{color:var(--steel-200);font-weight:600}
+    .outcomes{display:grid;grid-template-columns:repeat(3,1fr);margin-top:28px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .outcome{position:relative;padding:24px 26px;border-right:1px solid var(--line);background:rgba(14,33,52,.5)}
+    .outcome:last-child{border-right:0}
+    .outcome::before{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,var(--accent),transparent);transform-origin:left;transition:transform 1s var(--ease);transition-delay:var(--od,0s)}
+    .js .outcomes.reveal:not(.in) .outcome::before{transform:scaleX(0)}
+    .outcome b{display:block;font-family:var(--font-head);font-size:18px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-bright);margin-bottom:4px}
+    .outcome span{font-size:14px;color:var(--steel-400)}
 
-    .footer{
-      position:absolute;
-      z-index:4;
-      left:28px;
-      right:28px;
-      bottom:22px;
-      display:flex;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-      color:var(--steel-400);
-      font-size:13px;
-    }
+    /* 04 Come */
+    .how{display:grid;grid-template-columns:1fr 340px;gap:60px;margin-top:56px;align-items:start}
+    .steps{position:relative}
+    .rail,.rail-fill{position:absolute;left:23.5px;top:24px;bottom:24px;width:1px}
+    .rail{background:rgba(127,166,204,.22)}
+    .rail-fill{width:2px;left:23px;background:linear-gradient(180deg,var(--accent-bright),var(--accent));transform-origin:top;transform:scaleY(0);box-shadow:0 0 12px rgba(191,216,240,.5)}
+    .steps ol{list-style:none}
+    .step{position:relative;display:grid;grid-template-columns:48px 1fr;gap:24px;padding-bottom:40px}
+    .step:last-child{padding-bottom:0}
+    .step-n{position:relative;z-index:1;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--steel-400);background:var(--bg-2);border:1px solid var(--line-strong);transition:background .5s ease,color .5s ease,border-color .5s ease,box-shadow .5s ease}
+    .step.lit .step-n{background:var(--cta);color:#fff;border-color:var(--accent-bright);box-shadow:0 0 0 5px rgba(127,166,204,.14),0 0 26px rgba(127,166,204,.45)}
+    .step h3{font-family:var(--font-head);font-size:22px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--steel-300);margin:10px 0 6px;transition:color .5s ease}
+    .step.lit h3{color:var(--steel-100)}
+    .step p{color:var(--steel-300);font-size:15.5px;max-width:560px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .chip{font-family:var(--font-mono);font-size:11.5px;color:var(--steel-200);border:1px solid var(--line-strong);background:rgba(14,33,52,.5);border-radius:4px;padding:5px 10px;opacity:.45;transform:translateY(4px);transition:opacity .5s ease,transform .5s var(--ease),border-color .5s ease;transition-delay:calc(var(--c) * .08s)}
+    .step.lit .chip{opacity:1;transform:none;border-color:rgba(127,166,204,.55)}
+    .aside{position:sticky;top:96px}
+    .aside .panel + .panel{margin-top:16px}
+    .aside ul{list-style:none;margin-top:6px}
+    .aside li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--steel-300)}
+    .aside li:last-child{border-bottom:0}
+    .aside li svg{flex-shrink:0;margin-top:4px}
+    .free{display:flex;align-items:baseline;gap:10px;margin:8px 0 4px}
+    .free b{font-family:var(--font-head);font-size:36px;font-weight:700;color:var(--steel-100);letter-spacing:.03em;line-height:1}
+    .free span{font-size:14px;color:var(--steel-400)}
+    .aside .btn{width:100%;margin-top:16px}
+
+    /* ═════════ 05 RICHIESTA CENSIMENTO ═════════ */
+    .request{position:relative;overflow:hidden;overflow:clip;background:var(--bg)}
+    /* lo sfondo resta fermo nella finestra mentre si scorre il modulo */
+    .bg-stage{position:sticky;top:0;z-index:0;pointer-events:none;height:100vh;height:100svh;margin-bottom:-100vh;margin-bottom:-100svh}
+    .bg-layer{position:absolute;inset:0;opacity:0;transform:scale(1.04);transition:opacity 1.1s ease,transform 7s ease}
+    .bg-layer.on{opacity:1;transform:scale(1)}
+    .bg-layer img{position:absolute;display:block}
+    .bg-layer.photo{isolation:isolate}
+    .bg-layer.photo img{inset:0;width:100%;height:100%;object-fit:cover;object-position:75% center;filter:grayscale(1) contrast(1.15) brightness(.82)}
+    .bg-layer.photo::after{content:"";position:absolute;inset:0;background:#3A6E9E;mix-blend-mode:color;opacity:.9}
+    .bg-layer.illus img{right:2%;top:50%;width:min(44%,720px);transform:translateY(-50%);opacity:.9}
+    .bg-shade{position:absolute;inset:0;background:
+      linear-gradient(90deg,var(--bg) 0%,rgba(14,33,52,.94) 34%,rgba(14,33,52,.5) 62%,rgba(14,33,52,.18) 100%),
+      linear-gradient(180deg,var(--bg) 0%,transparent 16%,transparent 84%,var(--bg) 100%)}
+    .bg-tex{position:absolute;inset:0;opacity:.5;background:
+      repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 1px,transparent 1px 5px),
+      linear-gradient(rgba(184,195,203,.05) 1px,transparent 1px) 0 0/74px 74px,
+      linear-gradient(90deg,rgba(184,195,203,.05) 1px,transparent 1px) 0 0/74px 74px}
+    .bg-caption{position:absolute;right:32px;bottom:28px;z-index:2;display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel-300);background:rgba(14,33,52,.7);border:1px solid var(--line-strong);border-radius:4px;padding:6px 12px;max-width:calc(100% - 64px)}
+    .bg-caption i{width:6px;height:6px;flex-shrink:0;border:1px solid var(--accent-bright);transform:rotate(45deg)}
+    .request .wrap{position:relative;z-index:2;padding:130px 0 110px}
+    .req-intro{max-width:680px}
+    .req-intro .lead{margin-bottom:36px}
+
+    .form-card{position:relative;max-width:680px;background-color:rgba(19,42,64,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line-strong);border-radius:14px;padding:30px 32px 28px;box-shadow:0 34px 90px rgba(5,16,28,.5)}
+    .stepper{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+    .stp{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--steel-400);transition:color .3s ease}
+    .stp i{position:relative;display:block;height:3px;border-radius:2px;background:var(--line-strong);margin-bottom:9px;overflow:hidden}
+    .stp i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--accent-dark),var(--accent-bright));transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+    .stp.done i::after,.stp.active i::after{transform:scaleX(1)}
+    .stp.active{color:var(--accent-bright)}
+    .stp.done{color:var(--steel-300)}
+    .stp b{font-family:var(--font-mono);font-weight:500;margin-right:6px}
+    .fstep{display:none}
+    .fstep.active{display:block;animation:fadeUp .5s var(--ease)}
+    .fintro{font-size:15px;color:var(--steel-300);margin-bottom:20px}
+    .fgroup{margin-bottom:22px}
+    .flabel{display:block;font-family:var(--font-head);font-size:13.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--steel-200);margin-bottom:10px}
+    .flabel .req{color:var(--accent-bright)}
+    .flabel .opt{font-family:var(--font-sans);text-transform:none;letter-spacing:0;font-weight:400;font-size:12.5px;color:var(--steel-400);margin-left:6px}
+    .input{width:100%;background:rgba(14,33,52,.8);border:1px solid var(--line-strong);border-radius:6px;color:var(--steel-100);font-size:15px;padding:11px 14px;outline:none;transition:border-color .2s ease,box-shadow .2s ease}
+    .input::placeholder{color:var(--steel-400)}
+    .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(127,166,204,.18)}
+    select.input{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23BFD8F0' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+    select.input option{background:var(--surface);color:var(--steel-100)}
+    .frow{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+    .frow3{display:grid;grid-template-columns:repeat(3,1fr);gap:0 14px}
+    .chips-group{display:flex;flex-wrap:wrap;gap:8px}
+    .opt-chip{border:1px solid var(--line-strong);background:rgba(14,33,52,.6);color:var(--steel-300);border-radius:6px;padding:9px 14px;font-size:14px;line-height:1.3;cursor:pointer;transition:border-color .2s ease,color .2s ease,background .2s ease,box-shadow .2s ease}
+    .opt-chip:hover{border-color:var(--steel-300);color:var(--steel-100)}
+    .opt-chip[aria-pressed="true"]{border-color:var(--accent-bright);background:rgba(127,166,204,.22);color:#fff;box-shadow:0 0 14px rgba(127,166,204,.22)}
+    [data-mode="multi"] .opt-chip[aria-pressed="true"]::before{content:"✓";margin-right:7px;font-weight:700;color:var(--accent-bright)}
+    .ferr{display:none;margin-top:8px;font-size:13px;color:var(--err)}
+    .fgroup.err .ferr{display:block}
+    .fgroup.err .input{border-color:var(--err)}
+    .fgroup.err .opt-chip{border-color:rgba(242,163,163,.55)}
+    .fnav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:28px;padding-top:22px;border-top:1px solid var(--line)}
+    .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+
+    .mold{position:relative;border:1px solid var(--line-strong);border-radius:10px;padding:20px 20px 4px;margin-bottom:14px;background:rgba(14,33,52,.55);animation:fadeUp .45s var(--ease)}
+    .mold:focus-within{border-color:rgba(127,166,204,.6)}
+    .mold-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .mold-title{font-family:var(--font-head);font-size:18px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+    .mold-n{font-family:var(--font-mono);font-size:13px;color:var(--accent);margin-right:8px;font-weight:500}
+    .mold-rm{border:0;background:none;cursor:pointer;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel-400)}
+    .mold-rm:hover{color:var(--err)}
+    .add-mold{width:100%;border:1px dashed rgba(127,166,204,.6);background:rgba(127,166,204,.06);color:var(--accent-bright);border-radius:10px;padding:16px;font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+    .add-mold:hover{background:rgba(127,166,204,.14);border-color:var(--accent-bright)}
+
+    .sum-block{border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:12px;background:rgba(14,33,52,.5)}
+    .sum-block.strada{border-color:rgba(127,166,204,.5);background:rgba(127,166,204,.08)}
+    .sum-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .sum-title{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--steel-300)}
+    .sum-edit{border:0;background:none;cursor:pointer;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+    .sum-edit:hover{color:var(--accent-bright)}
+    .sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+    .sum-k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--steel-400)}
+    .sum-v{font-size:14px;color:var(--steel-100);overflow-wrap:anywhere}
+    .sum-empty,.sum-note{font-size:13.5px;color:var(--steel-400)}
+    .sum-note{margin-top:10px}
+    .sum-mold{padding:10px 0;border-top:1px solid var(--line)}
+    .sum-mold:first-of-type{border-top:0;padding-top:0}
+    .sum-mold-h{font-size:14.5px;font-weight:600;color:var(--steel-100)}
+    .sum-mold-h span{font-family:var(--font-mono);font-size:12px;color:var(--accent);margin-right:8px}
+    .sum-mold-d{font-size:13px;color:var(--steel-400);margin:2px 0 6px}
+    .route-chip{display:inline-block;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--cta);border-radius:20px;padding:4px 11px;margin:4px 6px 0 0}
+    .route-chip.muted{background:transparent;border:1px solid var(--line-strong);color:var(--steel-300)}
+    .consent{display:flex;gap:12px;align-items:flex-start;cursor:pointer;padding:14px 16px;border:1px solid var(--line-strong);border-radius:8px;background:rgba(14,33,52,.5);font-size:14px;color:var(--steel-300);text-transform:none;letter-spacing:0;font-family:var(--font-sans);font-weight:400;margin:0}
+    .consent input{appearance:none;-webkit-appearance:none;width:19px;height:19px;flex-shrink:0;margin-top:1px;border:1px solid var(--line-strong);border-radius:3px;background:rgba(14,33,52,.85);display:grid;place-content:center;cursor:pointer}
+    .consent input:checked{background:var(--cta);border-color:var(--accent-bright)}
+    .consent input:checked::after{content:"✓";color:#fff;font-size:12px;font-weight:700;line-height:1}
+    .consent input:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
+    .send-err{margin-top:14px;padding:12px 14px;border:1px solid rgba(242,163,163,.45);border-radius:8px;background:rgba(242,163,163,.08);font-size:14px;color:var(--err)}
+    .send-err a{color:var(--steel-100);text-decoration:underline}
+
+    /* v4 · strada indicata in tempo reale, facoltative raggruppate, dettagli tecnici chiusi */
+    .live-route{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin:-8px 0 24px;padding:12px 16px;border:1px solid rgba(127,166,204,.5);border-radius:8px;background:rgba(127,166,204,.08)}
+    .live-route .lr-k{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--steel-300)}
+    .live-route .lr-v{display:flex;flex-wrap:wrap;align-items:center}
+    .live-route .lr-v .route-chip{margin:2px 6px 2px 0}
+    .live-route .lr-hint{font-size:13.5px;color:var(--steel-400)}
+    .form-card[data-cur="4"] .live-route{display:none}
+    .fdivider{display:flex;align-items:center;gap:12px;margin:30px 0 20px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel-400)}
+    .fdivider::before,.fdivider::after{content:"";flex:1;height:1px;background:var(--line)}
+    .fhint{margin-top:7px;font-size:12.5px;color:var(--steel-400)}
+    .fnote{display:block;margin-top:7px;font-size:12.5px;color:var(--accent)}
+    .fnote[hidden]{display:none}
+    .mold-route{margin:-6px 0 18px;font-size:13px;color:var(--steel-400)}
+    .mold-route .route-chip{margin:4px 6px 0 0}
+    .mold-more{margin:0 0 18px;border-top:1px dashed var(--line-strong);padding-top:14px}
+    .mold-more summary{cursor:pointer;list-style:none;font-family:var(--font-head);font-size:13.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+    .mold-more summary::-webkit-details-marker{display:none}
+    .mold-more summary::before{content:"+";display:inline-block;width:16px;font-family:var(--font-mono)}
+    .mold-more[open] summary::before{content:"−"}
+    .mold-more summary:hover{color:var(--accent-bright)}
+    .mold-more summary:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
+    .mold-more summary .opt{font-family:var(--font-sans);text-transform:none;letter-spacing:0;font-weight:400;font-size:12.5px;color:var(--steel-400);margin-left:6px}
+    .mold-more[open] summary{margin-bottom:16px}
+    .done-route{margin:18px auto 0;max-width:460px}
+    .done-route .route-chip{margin:4px 3px 0}
+    .next-steps{list-style:none;max-width:460px;margin:26px auto 0;text-align:left;border-top:1px solid var(--line)}
+    .next-steps li{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--steel-300)}
+    .next-steps b{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--accent-bright);border:1px solid rgba(127,166,204,.5);border-radius:3px;padding:2px 7px;flex-shrink:0;margin-top:1px}
+    .next-steps .ns-t{display:block;color:var(--steel-100);font-weight:600}
+
+    .done-state{display:none;text-align:center;padding:26px 6px 10px}
+    .form-card.sent .fbody{display:none}
+    .form-card.sent .done-state{display:block;animation:fadeUp .6s var(--ease)}
+    .done-icon{width:68px;height:68px;border-radius:50%;margin:0 auto 20px;display:grid;place-content:center;border:1px solid var(--accent-bright);background:rgba(127,166,204,.14);box-shadow:0 0 0 8px rgba(127,166,204,.07),0 0 40px rgba(127,166,204,.35)}
+    .done-state h3{font-family:var(--font-head);font-size:28px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px}
+    .done-state p{color:var(--steel-300);font-size:16px;max-width:440px;margin:0 auto 6px}
+    .done-code{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel-400);margin-top:18px!important}
+    .done-code b{color:var(--accent-bright);font-weight:500}
+    .req-alt{max-width:680px;margin-top:18px;font-size:14px;color:var(--steel-400)}
+    .req-alt a{color:var(--accent-bright);border-bottom:1px solid rgba(191,216,240,.35)}
+
+    .footer{border-top:1px solid var(--line);padding:28px 0;background:var(--bg)}
+    .footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--steel-400)}
     .footer a:hover{color:var(--accent-bright)}
 
-    @media(max-width:760px){
-      body{overflow:auto}
-      .page{padding:24px 18px;align-items:center}
-      .lang{top:18px;right:18px}
-      .content{padding:82px 0 72px}
-      .brand{font-size:44px}
-      .subtitle{font-size:15px;margin-bottom:56px}
-      .status{font-size:15px}
-      .loader{height:34px}
-      .loading-text{font-size:14px;margin-bottom:34px}
-      .microcopy{font-size:14px}
-      .footer{position:absolute;left:18px;right:18px;bottom:16px;font-size:12px}
+    /* ═════════ RESPONSIVE ═════════ */
+    @media (max-width:1060px){
+      .hero-inner{grid-template-columns:1fr;gap:56px}
+      .bp{max-width:600px}
+      .about{grid-template-columns:1fr;gap:40px}
+      .how{grid-template-columns:1fr;gap:44px}
+      .aside{position:static}
+      .match{grid-template-columns:1fr}
+      .match-hub{min-height:170px}
+      .flow{left:50%;right:auto;top:0;bottom:0;width:1px;height:auto;transform:translateX(-.5px)}
+      .flow::before{background:repeating-linear-gradient(180deg,rgba(127,166,204,.75) 0 6px,transparent 6px 12px);animation-name:flowY}
+      @keyframes flowY{to{background-position:0 24px}}
+      .pulse{left:-3px;top:0;animation-name:travelY}
+      @keyframes travelY{0%{top:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:calc(100% - 7px);opacity:0}}
+      .questions{grid-template-columns:1fr 1fr}
+      .bg-shade{background:linear-gradient(180deg,var(--bg) 0%,rgba(14,33,52,.72) 22%,rgba(14,33,52,.72) 78%,var(--bg) 100%)}
+      .bg-layer.illus img{width:90%;right:5%;top:18%;transform:none;opacity:.4}
+      .bg-layer.photo img{object-position:center}
     }
+    @media (max-width:820px){
+      .nav a:not(.btn){display:none}
+      .solutions{grid-template-columns:1fr}
+      .outcomes{grid-template-columns:1fr}
+      .outcome{border-right:0;border-bottom:1px solid var(--line)}
+      .outcome:last-child{border-bottom:0}
+      .questions{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){
+      .wrap{width:calc(100% - 32px)}
+      .header .wrap,.header.scrolled .wrap{height:60px}
+      .brand{font-size:20px}
+      .nav .btn{padding:8px 12px;font-size:12px;min-height:36px}
+      .btn{font-size:14.5px;letter-spacing:.05em;padding:13px 16px;white-space:normal;text-align:center}
+      .hero{padding-top:108px}
+      .hero-lead,.lead{font-size:16.5px}
+      .hero-actions .btn{width:100%}
+      .eyebrow .opt{display:none}
+      .facts{grid-template-columns:repeat(3,1fr)}
+      .fact{padding:0 12px}
+      .fact b{font-size:22px}
+      .fact > span{display:block;font-size:12px;line-height:1.4;margin-top:4px}
+      .ticker{margin-top:64px}
+      section.block{padding:88px 0}
+      .case b{font-size:26px}
+      .case div{padding:18px}
+      .sol{padding:24px 22px}
+      .sol-top{flex-wrap:wrap}
+      .config{padding:22px 18px}
+      .quote{padding:22px 20px}
+      .request .wrap{padding:88px 0 90px}
+      .form-card{padding:22px 16px 20px}
+      .stepper{gap:6px}
+      .stp{font-size:11px;letter-spacing:.06em}
+      .stp b{display:none}
+      .frow,.frow3,.sum-grid{grid-template-columns:1fr}
+      .fnav .btn{flex:1}
+      .bg-caption{left:16px;right:16px;bottom:16px;max-width:none}
+    }
+
+    /* "Riduci movimento": fermi i movimenti continui, restano dissolvenze e stati */
+    .reduced{scroll-behavior:auto}
+    .reduced .hero h1 .line > span{transform:none;opacity:0;animation-name:fadeIn;animation-duration:.8s}
+    .reduced .fade-up{transform:none;animation-name:fadeIn}
+    .js.reduced .reveal{transform:none}
+    .reduced .ticker-track,.reduced .flow::before,.reduced .hub-node,.reduced .avatar::before,.reduced .hero h1 em,.reduced .dot::after,.reduced .state i{animation:none}
+    .reduced .scan,.reduced .pulse{display:none}
+    .reduced .bg-layer{transform:none;transition:opacity .4s ease}
+    /* ── Selettore lingua IT / EN ── */
+    html.i18n-pending body{visibility:hidden}
+    .lang-switch{display:flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line-strong);border-radius:6px;background:rgba(14,33,52,.55)}
+    .lang-switch button{border:0;background:transparent;color:var(--steel-300);font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:.1em;line-height:1;padding:7px 9px;border-radius:4px;cursor:pointer;transition:color .2s ease,background .2s ease}
+    .lang-switch button:hover{color:var(--steel-100)}
+    .lang-switch button[aria-pressed="true"]{background:var(--cta);color:#fff}
+    .lang-switch button:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
+    @media (max-width:560px){.lang-switch button{padding:6px 7px;font-size:12px}.nav{gap:8px}.header .brand{font-size:18px}.lang-switch{padding:2px}.lang-switch button[aria-pressed="true"]{display:none}.lang-switch button{padding:7px 8px}.nav .btn.btn-sm{white-space:nowrap;font-size:11px;letter-spacing:.04em;padding:8px 10px}}
+    @media (max-width:340px){.nav .btn.btn-sm{display:none}}
   </style>
 </head>
 <body>
-  <main class="page">
-    <div class="scan-lines"></div>
+  <script>
+    document.documentElement.classList.add('js');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('reduced');
+    /* Lingua: ?lang=en|it nel link, poi la scelta salvata, poi la lingua del browser */
+    (function () {
+      var l = null;
+      try { l = new URLSearchParams(location.search).get('lang'); } catch (e) {}
+      if (l !== 'it' && l !== 'en') { try { l = localStorage.getItem('tr_lang'); } catch (e) {} }
+      if (l !== 'it' && l !== 'en') l = /^it\b/i.test(navigator.language || 'it') ? 'it' : 'en';
+      window.TR_LANG = l;
+      if (l === 'en') {
+        document.documentElement.lang = 'en';
+        document.documentElement.classList.add('i18n-pending');
+        setTimeout(function () { document.documentElement.classList.remove('i18n-pending'); }, 2500);
+      }
+    })();
+  </script>
 
-    <div class="lang" aria-label="Selezione lingua">
-      <button type="button" class="active" data-lang="it">IT</button>
-      <button type="button" data-lang="en">EN</button>
+  <!-- ═════════ HEADER ═════════ -->
+  <header class="header">
+    <div class="wrap">
+      <a href="#top" class="brand" aria-label="ToolingReuse, torna all'inizio">Tooling<span>Reuse</span></a>
+      <nav class="nav" aria-label="Sezioni">
+        <a href="#chi-siamo">Chi siamo</a>
+        <a href="#obiettivo">Obiettivo</a>
+        <a href="#cosa-si-ottiene">Cosa si ottiene</a>
+        <a href="#come">Come</a>
+        <a href="#richiesta" class="btn btn-primary btn-sm">Richiedi il censimento</a>
+        <div class="lang-switch" role="group" aria-label="Lingua / Language" data-i18n-skip>
+          <button type="button" data-lang="it" aria-pressed="true">IT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </nav>
     </div>
+    <div class="progress" aria-hidden="true"><i></i></div>
+  </header>
 
-    <section class="content" aria-label="ToolingReuse in sviluppo">
-      <div class="brand">Tooling<span>Reuse</span></div>
-      <div class="subtitle" data-i18n="subtitle">Industrial Mold Assessment</div>
+  <main id="top">
 
-      <div class="status" data-i18n="status">Project loading</div>
+    <!-- ═════════ HERO ═════════ -->
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div>
+          <div class="eyebrow fade-up" style="--d:.05s"><span class="dot"></span><span>Censimento degli stampi fermi<span class="opt"> · pilota aperto</span></span></div>
+          <h1>
+            <span class="line"><span style="--i:0">Ogni stampo fermo</span></span>
+            <span class="line"><span style="--i:1">è <em>capitale</em></span></span>
+            <span class="line"><span style="--i:2"><em>immobilizzato.</em></span></span>
+            <span class="line sub"><span style="--i:3">Scopriamo quanto vale.</span></span>
+          </h1>
+          <p class="hero-lead fade-up" style="--d:.65s">ToolingReuse aiuta aziende, terzisti e stampisti a mappare le attrezzature inutilizzate e a trovare, caso per caso, la soluzione economicamente più vantaggiosa.</p>
+          <div class="hero-actions fade-up" style="--d:.8s">
+            <a href="#richiesta" class="btn btn-primary">Richiedi un censimento gratuito <span class="arr">→</span></a>
+            <a href="#come" class="btn btn-ghost">Come funziona</a>
+          </div>
+          <div class="facts fade-up" style="--d:.95s">
+            <div class="fact"><b><span data-to="1">1</span>–<span data-to="30">30</span></b><span>stampi censiti gratis, anche uno solo</span></div>
+            <div class="fact"><b>0 €</b><span>costo per l'azienda</span></div>
+            <div class="fact"><b><span data-to="100">100</span>%</b><span>dei risultati a voi</span></div>
+          </div>
+        </div>
 
-      <div class="loader-wrap" aria-label="Loading">
-        <div class="loader">
-          <div class="loader-fill"></div>
+        <div class="fade-up" style="--d:.3s">
+        <div class="bp brackets" aria-hidden="true">
+          <div class="bp-head">
+            <span>Scheda stampo · <b id="m-id" data-i18n-skip>STM-0417</b></span>
+            <span class="state"><i></i>Stato: fermo</span>
+          </div>
+          <div class="bp-stage">
+            <svg viewBox="0 0 560 380" role="presentation">
+              <line class="bp-soft draw" style="--d:.3s" pathLength="1" x1="60" y1="34" x2="360" y2="34"/>
+              <line class="bp-soft draw" style="--d:.3s" pathLength="1" x1="60" y1="26" x2="60" y2="42"/>
+              <line class="bp-soft draw" style="--d:.3s" pathLength="1" x1="360" y1="26" x2="360" y2="42"/>
+              <text class="bp-text fade" style="--d:1.2s" x="182" y="24">596 mm</text>
+              <rect class="bp-fill draw" style="--d:.4s" pathLength="1" x="60" y="56" width="300" height="126" rx="3"/>
+              <path class="bp-stroke draw" style="--d:.9s" pathLength="1" d="M140 182 V142 Q140 120 162 120 H258 Q280 120 280 142 V182"/>
+              <line class="bp-dash fade" style="--d:1.4s" x1="44" y1="190" x2="376" y2="190"/>
+              <text class="bp-text fade" style="--d:1.5s" x="384" y="194">P.L.</text>
+              <rect class="bp-fill draw" style="--d:.55s" pathLength="1" x="60" y="198" width="300" height="126" rx="3"/>
+              <path class="bp-stroke draw" style="--d:1s" pathLength="1" d="M154 198 V160 Q154 136 176 136 H244 Q266 136 266 160 V198" opacity=".55"/>
+              <rect class="bp-soft draw" style="--d:.8s" pathLength="1" x="72" y="64" width="14" height="252" rx="2"/>
+              <rect class="bp-soft draw" style="--d:.8s" pathLength="1" x="334" y="64" width="14" height="252" rx="2"/>
+              <circle class="bp-stroke draw" style="--d:1.1s" pathLength="1" cx="112" cy="96" r="7"/>
+              <circle class="bp-stroke draw" style="--d:1.15s" pathLength="1" cx="308" cy="96" r="7"/>
+              <circle class="bp-stroke draw" style="--d:1.2s" pathLength="1" cx="112" cy="286" r="7"/>
+              <circle class="bp-stroke draw" style="--d:1.25s" pathLength="1" cx="308" cy="286" r="7"/>
+              <line class="bp-dash fade" style="--d:1.6s" x1="119" y1="96" x2="301" y2="96"/>
+              <line class="bp-dash fade" style="--d:1.6s" x1="119" y1="286" x2="301" y2="286"/>
+              <line class="bp-stroke draw" style="--d:1.3s" pathLength="1" x1="180" y1="324" x2="180" y2="236"/>
+              <line class="bp-stroke draw" style="--d:1.38s" pathLength="1" x1="210" y1="324" x2="210" y2="236"/>
+              <line class="bp-stroke draw" style="--d:1.46s" pathLength="1" x1="240" y1="324" x2="240" y2="236"/>
+              <rect class="bp-soft draw" style="--d:1.3s" pathLength="1" x="160" y="324" width="100" height="14" rx="2"/>
+              <g class="anno" style="--d:1.9s">
+                <circle class="bp-dot" cx="280" cy="142" r="3"/>
+                <polyline class="bp-soft" points="280,142 410,86 420,86"/>
+                <text class="bp-text" x="424" y="82">PROPRIETÀ</text>
+                <text class="bp-text-hi" id="m-prop" data-i18n-skip x="424" y="96">da verificare</text>
+              </g>
+              <g class="anno" style="--d:2.1s">
+                <circle class="bp-dot" cx="360" cy="250" r="3"/>
+                <polyline class="bp-soft" points="360,250 410,170 420,170"/>
+                <text class="bp-text" x="424" y="166">ULTIMO USO</text>
+                <text class="bp-text-hi" id="m-uso" data-i18n-skip x="424" y="180">7 anni fa</text>
+              </g>
+              <g class="anno" style="--d:2.3s">
+                <circle class="bp-dot" cx="260" cy="331" r="3"/>
+                <polyline class="bp-soft" points="260,331 410,262 420,262"/>
+                <text class="bp-text" x="424" y="258">CUSTODIA</text>
+                <text class="bp-text-hi" x="424" y="272">costo non misurato</text>
+              </g>
+              <g class="anno" style="--d:2.5s">
+                <circle class="bp-dot" cx="60" cy="120" r="3"/>
+                <polyline class="bp-soft" points="60,120 20,120 20,356 420,356"/>
+                <text class="bp-text" x="424" y="352">VALORE</text>
+                <text class="bp-text-hi" x="424" y="366">? → censimento</text>
+              </g>
+            </svg>
+            <div class="scan"></div>
+            <div class="xh-v"></div>
+            <div class="xh-h"></div>
+            <div class="xh-c"></div>
+          </div>
+          <div class="bp-foot">
+            <span>Rilievo in corso</span>
+            <span>X <b id="rx" data-i18n-skip>0.0</b> · Y <b id="ry" data-i18n-skip>0.0</b> mm</span>
+          </div>
+        </div>
         </div>
       </div>
 
-      <div class="loading-text" data-i18n="loading">Industrial survey loading</div>
-
-      <p class="microcopy" data-i18n="microcopy">Stiamo raccogliendo informazioni sugli stampi industriali non utilizzati. Il questionario è il primo canale di validazione.</p>
-
-      <a class="cta" data-i18n="cta" href="/questionario.html" target="_blank" rel="noopener">Accedi al questionario →</a>
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span class="ticker-item">Stampi fermi</span><span class="ticker-item">Capacità inutilizzata</span><span class="ticker-item">Giacenze</span><span class="ticker-item">Proprietà e custodia</span><span class="ticker-item">Costo di stoccaggio</span><span class="ticker-item">Compatibilità pressa</span><span class="ticker-item">Conto terzi</span><span class="ticker-item">Riciclo qualificato</span>
+          <span class="ticker-item">Stampi fermi</span><span class="ticker-item">Capacità inutilizzata</span><span class="ticker-item">Giacenze</span><span class="ticker-item">Proprietà e custodia</span><span class="ticker-item">Costo di stoccaggio</span><span class="ticker-item">Compatibilità pressa</span><span class="ticker-item">Conto terzi</span><span class="ticker-item">Riciclo qualificato</span>
+        </div>
+      </div>
     </section>
 
-    <footer class="footer">
-      <span>© ToolingReuse</span>
-      <a href="mailto:info@toolingreuse.com">info@toolingreuse.com</a>
-    </footer>
+    <!-- ═════════ 01 · CHI SIAMO ═════════ -->
+    <section class="block" id="chi-siamo">
+      <div class="sec-bg" aria-hidden="true">01</div>
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="sec-num">01</span>Chi siamo</div>
+        <div class="about">
+          <div class="reveal">
+            <h2>Veniamo dall'industria e partiamo da un problema visto da vicino.</h2>
+            <p>ToolingReuse nasce da un caso concreto: <strong>un magazzino di stampi fermi da anni</strong>, ciascuno dal valore di decine di migliaia di euro, utilizzati una volta ogni sette anni. Occupano spazio, hanno un costo di custodia e nessuno sa con esattezza quanto valgano oggi, né cosa se ne possa fare.</p>
+            <p>Parlando con stampisti, terzisti e produttori in Italia, in Svizzera e in Asia abbiamo trovato la stessa situazione ovunque: <strong>stampi ancora funzionanti che restano fermi o finiscono a rottame</strong>, perché manca un modo semplice per capire quale sia l'alternativa più conveniente.</p>
+            <div class="case">
+              <div><b>~<span data-to="20">20</span>.000 €</b><span>valore di uno stampo, nel caso da cui siamo partiti</span></div>
+              <div><b>1 ogni <span data-to="7">7</span> anni</b><span>la frequenza con cui viene usato</span></div>
+            </div>
+          </div>
+          <aside class="panel brackets reveal" style="--rd:.15s" aria-label="Il team">
+            <div class="panel-title">Il team</div>
+            <div class="person"><div class="avatar">LR</div><div><b>Lorenzo Rea</b><span>Co-founder</span></div></div>
+            <div class="person"><div class="avatar">MB</div><div><b>Matteo Bove</b><span>Co-founder</span></div></div>
+            <div class="panel-foot">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7FA6CC" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+              <span>Operiamo tra Lombardia e Canton Ticino.</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ 02 · L'OBIETTIVO ═════════ -->
+    <section class="block alt" id="obiettivo">
+      <div class="sec-bg" aria-hidden="true">02</div>
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="sec-num">02</span>L'obiettivo</div>
+        <h2 class="reveal">Una rete attiva che incrocia domanda e offerta.</h2>
+        <p class="lead reveal">Vogliamo connettere chi ha un capitale immobilizzato con chi necessita di capacità produttiva o di uno stampo, individuando di volta in volta la soluzione su misura più vantaggiosa per ciascun caso.</p>
+        <div class="match reveal">
+          <div class="match-col">
+            <div class="match-kicker">Offerta</div>
+            <div class="match-title">Chi ha capitale immobilizzato</div>
+            <ul>
+              <li>Stampi e attrezzature fermi in magazzino</li>
+              <li>Capacità produttiva inutilizzata</li>
+              <li>Giacenze di pezzi ancora riutilizzabili</li>
+            </ul>
+          </div>
+          <div class="match-hub" aria-hidden="true">
+            <div class="flow"><i class="pulse"></i><i class="pulse" style="--pd:.95s"></i><i class="pulse" style="--pd:1.9s"></i></div>
+            <div class="hub-node brackets"><b>Tooling<span>Reuse</span></b><small>incrocio e valutazione caso per caso</small></div>
+          </div>
+          <div class="match-col">
+            <div class="match-kicker">Domanda</div>
+            <div class="match-title">Chi cerca una soluzione produttiva</div>
+            <ul>
+              <li>Pezzi finiti, senza investire in un nuovo stampo</li>
+              <li>Capacità produttiva disponibile</li>
+              <li>Uno stampo, anche non più reperibile</li>
+            </ul>
+          </div>
+        </div>
+        <blockquote class="quote reveal">Non un semplice catalogo statico, ma un <em>modello dinamico</em> che trasforma un costo o un vincolo in un'opportunità economica ponderata caso per caso.</blockquote>
+      </div>
+    </section>
+
+    <!-- ═════════ 03 · COSA SI OTTIENE ═════════ -->
+    <section class="block" id="cosa-si-ottiene">
+      <div class="sec-bg" aria-hidden="true">03</div>
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="sec-num">03</span>Cosa si ottiene</div>
+        <h2 class="reveal">Per ogni stampo, la strada più vantaggiosa.</h2>
+        <p class="lead reveal">A seconda dello stato dell'attrezzatura, di chi ne detiene la proprietà e di dove si trova, le soluzioni possibili sono quattro. Provate a orientarvi:</p>
+
+        <div class="config brackets reveal">
+          <div class="config-top">
+            <div class="config-title">Quale strada per il vostro stampo?</div>
+            <div class="config-note">Prova indicativa</div>
+          </div>
+          <div class="questions">
+            <div class="q">
+              <label id="q1l">Lo stampo è ancora funzionante?</label>
+              <div class="seg" data-q="q1" role="group" aria-labelledby="q1l">
+                <button type="button" data-v="si" aria-pressed="false">Sì</button>
+                <button type="button" data-v="no" aria-pressed="false">No</button>
+              </div>
+            </div>
+            <div class="q" id="q2wrap">
+              <label id="q2l">Può restare dove si trova?</label>
+              <div class="seg" data-q="q2" role="group" aria-labelledby="q2l">
+                <button type="button" data-v="si" aria-pressed="false">Sì</button>
+                <button type="button" data-v="no" aria-pressed="false">No</button>
+              </div>
+            </div>
+            <div class="q">
+              <label id="q3l">Ci sono pezzi a magazzino?</label>
+              <div class="seg" data-q="q3" role="group" aria-labelledby="q3l">
+                <button type="button" data-v="si" aria-pressed="false">Sì</button>
+                <button type="button" data-v="no" aria-pressed="false">No</button>
+              </div>
+            </div>
+          </div>
+          <div class="result" aria-live="polite">
+            <span id="result-text" data-i18n-skip>Rispondete alle domande: evidenziamo le strade possibili.</span>
+            <button type="button" class="reset" id="reset">Azzera</button>
+          </div>
+        </div>
+
+        <div class="solutions">
+          <article class="sol reveal" data-route="conto-terzi">
+            <div class="sol-top">
+              <div class="sol-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#BFD8F0" stroke-width="1.6" aria-hidden="true"><rect x="3" y="10" width="18" height="10" rx="1"/><path d="M7 10V6h10v4"/><path d="M9 15h6"/></svg></div>
+              <span class="sol-tag">Lo stampo resta dov'è</span><span class="sol-badge">Strada indicata</span>
+            </div>
+            <h3>Produzione conto terzi</h3>
+            <p>Si vende la capacità produttiva, non l'attrezzatura: il pezzo viene prodotto dove lo stampo è già installato.</p>
+            <div class="sol-for"><b>Per chi</b> ha bisogno del pezzo finito e per chi vuole mettere a reddito un'attrezzatura ferma.</div>
+          </article>
+          <article class="sol reveal" style="--rd:.08s" data-route="cessione">
+            <div class="sol-top">
+              <div class="sol-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#BFD8F0" stroke-width="1.6" aria-hidden="true"><rect x="2" y="7" width="12" height="10" rx="1"/><path d="M14 10h4l3 3v4h-7"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg></div>
+              <span class="sol-tag">Lo stampo si sposta</span><span class="sol-badge">Strada indicata</span>
+            </div>
+            <h3>Cessione o noleggio dello stampo</h3>
+            <p>Quando è opportuno o necessario, l'attrezzatura viene trasferita verso un'altra sede, in vendita o a noleggio.</p>
+            <div class="sol-for"><b>Per chi</b> deve liberarsene o ha bisogno di produrre in proprio.</div>
+          </article>
+          <article class="sol reveal" data-route="giacenze">
+            <div class="sol-top">
+              <div class="sol-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#BFD8F0" stroke-width="1.6" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg></div>
+              <span class="sol-tag">Valorizza le giacenze</span><span class="sol-badge">Strada indicata</span>
+            </div>
+            <h3>Vendita dei pezzi a magazzino</h3>
+            <p>Le giacenze residue ancora riutilizzabili tornano sul mercato invece di restare a scaffale.</p>
+            <div class="sol-for"><b>Per chi</b> ha stock di componenti di prodotti fuori produzione.</div>
+          </article>
+          <article class="sol reveal" style="--rd:.08s" data-route="smaltimento">
+            <div class="sol-top">
+              <div class="sol-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#BFD8F0" stroke-width="1.6" aria-hidden="true"><path d="M7 19H4.8a1.8 1.8 0 0 1-1.6-2.7L6 11.5"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.6-2.7l-1.4-2.3"/><path d="M14 16l-3 3 3 3"/><path d="M8.3 13.6L6 11.5l-3.2 1"/><path d="M9.4 6.3l1.1-1.9a1.8 1.8 0 0 1 3.1 0l3 5.1"/><path d="M13.3 8.6l3.3.9.9-3.3"/></svg></div>
+              <span class="sol-tag">Libera spazio</span><span class="sol-badge">Strada indicata</span>
+            </div>
+            <h3>Smaltimento e riciclo qualificato</h3>
+            <p>Quando lo stampo è obsoleto o inutilizzabile: spazio fisico liberato e gestione fiscale curata, oltre la logica della vendita a rottame.</p>
+            <div class="sol-for"><b>Per chi</b> custodisce attrezzature a fine vita.</div>
+          </article>
+        </div>
+
+        <div class="outcomes reveal">
+          <div class="outcome"><b>Spazio liberato</b><span>Il magazzino torna produttivo.</span></div>
+          <div class="outcome" style="--od:.15s"><b>Custodia sotto controllo</b><span>Il costo di ogni stampo diventa un numero.</span></div>
+          <div class="outcome" style="--od:.3s"><b>Valore recuperato</b><span>Un costo fermo diventa un'opportunità.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ 04 · COME VOGLIAMO FARLO ═════════ -->
+    <section class="block alt" id="come">
+      <div class="sec-bg" aria-hidden="true">04</div>
+      <div class="wrap">
+        <div class="sec-head reveal"><span class="sec-num">04</span>Come vogliamo farlo</div>
+        <h2 class="reveal">Si parte da un censimento. Gratuito.</h2>
+        <p class="lead reveal">Prima di proporre qualsiasi soluzione servono dati reali. Per questo il primo passo è un censimento degli stampi fermi, senza costi per l'azienda: da uno fino a 30 stampi.</p>
+
+        <div class="how">
+          <div class="steps">
+            <div class="rail" aria-hidden="true"></div>
+            <div class="rail-fill" aria-hidden="true"></div>
+            <ol>
+              <li class="step">
+                <div class="step-n">01</div>
+                <div>
+                  <h3>Sopralluogo</h3>
+                  <p>Analizziamo insieme a voi gli stampi fermi, da uno fino a 30 nel primo censimento, direttamente dove sono custoditi.</p>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-n">02</div>
+                <div>
+                  <h3>Una scheda per ogni stampo</h3>
+                  <p>Per ciascuna attrezzatura registriamo le informazioni che servono a decidere.</p>
+                  <div class="chips">
+                    <span class="chip" style="--c:0">Stato e condizioni</span>
+                    <span class="chip" style="--c:1">Documentazione</span>
+                    <span class="chip" style="--c:2">Proprietà e custodia</span>
+                    <span class="chip" style="--c:3">Compatibilità pressa</span>
+                    <span class="chip" style="--c:4">Costo di stoccaggio</span>
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-n">03</div>
+                <div>
+                  <h3>Risultati all'azienda</h3>
+                  <p>Ricevete il quadro completo del vostro magazzino. I dati restano vostri: a ToolingReuse va solo un aggregato anonimo.</p>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-n">04</div>
+                <div>
+                  <h3>Soluzione su misura</h3>
+                  <p>Sulla base dei dati individuiamo, per ogni stampo, la strada economicamente più vantaggiosa tra le quattro possibili.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <div class="aside">
+            <div class="panel brackets reveal">
+              <div class="panel-title">Il censimento pilota</div>
+              <div class="free"><b>Gratuito</b><span>da 1 a 30 stampi</span></div>
+              <ul>
+                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7FA6CC" stroke-width="2.4" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Nessun costo e nessun impegno successivo</li>
+                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7FA6CC" stroke-width="2.4" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Risultati consegnati all'azienda</li>
+                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7FA6CC" stroke-width="2.4" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Dati riservati, solo aggregato anonimo</li>
+              </ul>
+              <a href="#richiesta" class="btn btn-primary btn-sm">Richiedi il censimento <span class="arr">→</span></a>
+            </div>
+            <div class="panel reveal" style="--rd:.1s">
+              <div class="panel-title">È pensato per</div>
+              <ul>
+                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7FA6CC" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg>Terzisti e stampisti che custodiscono stampi di terzi</li>
+                <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7FA6CC" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg>Aziende con attrezzeria interna e stampi fermi a magazzino</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════ 05 · RICHIESTA CENSIMENTO ═════════ -->
+    <section class="request" id="richiesta">
+      <div class="bg-stage" aria-hidden="true">
+        <div class="bg-layer"></div>
+        <div class="bg-layer"></div>
+        <div class="bg-shade"></div>
+        <div class="bg-tex"></div>
+        <div class="bg-caption"><i></i><span id="bg-caption" data-i18n-skip>Scegliete una tipologia di stampo</span></div>
+      </div>
+
+      <div class="wrap">
+        <div class="req-intro">
+          <div class="sec-head reveal"><span class="sec-num">05</span>Richiedi il censimento</div>
+          <h2 class="reveal">Avete stampi fermi in magazzino?</h2>
+          <p class="lead reveal">Ogni mese di fermo è spazio e custodia che state già pagando. Raccontateci il vostro magazzino: bastano un paio di minuti, e la strada indicata compare man mano che rispondete. I dettagli li vediamo insieme al sopralluogo.</p>
+        </div>
+
+        <div class="form-card brackets reveal" id="form-card">
+          <div class="fbody">
+            <ol class="stepper" aria-label="Avanzamento della richiesta">
+              <li class="stp active"><i></i><b>01</b>Magazzino</li>
+              <li class="stp"><i></i><b>02</b>Stampi</li>
+              <li class="stp"><i></i><b>03</b>Contatti</li>
+              <li class="stp"><i></i><b>04</b>Invio</li>
+            </ol>
+
+            <div class="live-route" aria-live="polite">
+              <span class="lr-k">Strada indicata finora</span>
+              <span class="lr-v" id="live-route" data-i18n-skip></span>
+            </div>
+
+            <!-- STEP 1 · Magazzino -->
+            <div class="fstep active" data-step="1">
+              <div class="fgroup" data-req="n_stampi">
+                <span class="flabel">Quanti stampi fermi avete, indicativamente? <span class="req">*</span></span>
+                <div class="chips-group" data-group="n_stampi" data-mode="single">
+                  <button type="button" class="opt-chip" data-v="1" aria-pressed="false">1</button>
+                  <button type="button" class="opt-chip" data-v="2–5" aria-pressed="false">2–5</button>
+                  <button type="button" class="opt-chip" data-v="6–20" aria-pressed="false">6–20</button>
+                  <button type="button" class="opt-chip" data-v="21–50" aria-pressed="false">21–50</button>
+                  <button type="button" class="opt-chip" data-v="Oltre 50" aria-pressed="false">Oltre 50</button>
+                </div>
+                <div class="ferr">Scegliete una fascia.</div>
+              </div>
+              <div class="fgroup" data-req="tipologie">
+                <span class="flabel">Di che tipologia? <span class="req">*</span><span class="opt">anche più di una</span></span>
+                <div class="chips-group" data-group="tipologie" data-mode="multi" id="type-chips"></div>
+                <div class="ferr">Indicate almeno una tipologia.</div>
+              </div>
+              <div class="fgroup" data-req="proprieta">
+                <span class="flabel">Di chi sono gli stampi? <span class="req">*</span></span>
+                <div class="chips-group" data-group="proprieta" data-mode="single">
+                  <button type="button" class="opt-chip" data-v="Nostri" aria-pressed="false">Nostri</button>
+                  <button type="button" class="opt-chip" data-v="Di clienti, li custodiamo noi" aria-pressed="false">Di clienti, li custodiamo noi</button>
+                  <button type="button" class="opt-chip" data-v="Entrambi" aria-pressed="false">Entrambi</button>
+                  <button type="button" class="opt-chip" data-v="Non sempre è chiaro" aria-pressed="false">Non sempre è chiaro</button>
+                </div>
+                <div class="ferr">Scegliete un'opzione.</div>
+              </div>
+              <div class="fdivider">Se lo sapete · facoltative</div>
+              <div class="fgroup">
+                <span class="flabel">Sono ancora funzionanti, in generale?</span>
+                <div class="chips-group" data-group="stato" data-mode="single">
+                  <button type="button" class="opt-chip" data-v="Sì, per lo più" aria-pressed="false">Sì, per lo più</button>
+                  <button type="button" class="opt-chip" data-v="In parte" aria-pressed="false">In parte</button>
+                  <button type="button" class="opt-chip" data-v="No, per lo più" aria-pressed="false">No, per lo più</button>
+                  <button type="button" class="opt-chip" data-v="Non so" aria-pressed="false">Non so</button>
+                </div>
+                <span class="fnote" data-note="stato" hidden>Dalla vostra prova nella sezione 03.</span>
+              </div>
+              <div class="fgroup">
+                <span class="flabel">Da quanto sono fermi, in media?</span>
+                <div class="chips-group" data-group="fermi_da" data-mode="single">
+                  <button type="button" class="opt-chip" data-v="Meno di 1 anno" aria-pressed="false">Meno di 1 anno</button>
+                  <button type="button" class="opt-chip" data-v="1–3 anni" aria-pressed="false">1–3 anni</button>
+                  <button type="button" class="opt-chip" data-v="3–7 anni" aria-pressed="false">3–7 anni</button>
+                  <button type="button" class="opt-chip" data-v="Oltre 7 anni" aria-pressed="false">Oltre 7 anni</button>
+                  <button type="button" class="opt-chip" data-v="Non so" aria-pressed="false">Non so</button>
+                </div>
+              </div>
+              <div class="frow">
+                <div class="fgroup">
+                  <span class="flabel">Pezzi a magazzino?</span>
+                  <div class="chips-group" data-group="giacenze" data-mode="single">
+                    <button type="button" class="opt-chip" data-v="Sì" aria-pressed="false">Sì</button>
+                    <button type="button" class="opt-chip" data-v="No" aria-pressed="false">No</button>
+                    <button type="button" class="opt-chip" data-v="Non so" aria-pressed="false">Non so</button>
+                  </div>
+                  <span class="fnote" data-note="giacenze" hidden>Dalla vostra prova nella sezione 03.</span>
+                </div>
+                <div class="fgroup">
+                  <span class="flabel">Costo di stoccaggio noto?</span>
+                  <div class="chips-group" data-group="costo" data-mode="single">
+                    <button type="button" class="opt-chip" data-v="Sì" aria-pressed="false">Sì</button>
+                    <button type="button" class="opt-chip" data-v="In parte" aria-pressed="false">In parte</button>
+                    <button type="button" class="opt-chip" data-v="No" aria-pressed="false">No</button>
+                  </div>
+                </div>
+              </div>
+              <div class="fnav"><span></span><button type="button" class="btn btn-primary" data-next>Avanti <span class="arr">→</span></button></div>
+            </div>
+
+            <!-- STEP 2 · Stampi (facoltativo) -->
+            <div class="fstep" data-step="2">
+              <p class="fintro">Volete descriverne qualcuno? È facoltativo: bastano tipologia e condizione per vedere la strada indicata per quello stampo. I dettagli tecnici, se li avete sotto mano, ci aiutano a preparare il sopralluogo.</p>
+              <div id="mold-list"></div>
+              <button type="button" class="add-mold" id="add-mold" data-i18n-skip>+ Aggiungi uno stampo</button>
+              <div class="fnav">
+                <button type="button" class="btn btn-ghost" data-prev>← Indietro</button>
+                <button type="button" class="btn btn-primary" data-next id="step2-next"><span class="lbl" data-i18n-skip>Salta, li vediamo al sopralluogo</span> <span class="arr">→</span></button>
+              </div>
+            </div>
+
+            <!-- STEP 3 · Contatti -->
+            <div class="fstep" data-step="3">
+              <div class="frow">
+                <div class="fgroup" data-req>
+                  <label class="flabel" for="f-company">Azienda <span class="req">*</span></label>
+                  <input class="input" id="f-company" autocomplete="organization" placeholder="Ragione sociale">
+                  <div class="ferr">Campo obbligatorio.</div>
+                </div>
+                <div class="fgroup" data-req>
+                  <label class="flabel" for="f-city">Sede <span class="req">*</span></label>
+                  <input class="input" id="f-city" autocomplete="address-level2" placeholder="Città" aria-describedby="h-city">
+                  <div class="ferr">Campo obbligatorio.</div>
+                  <div class="fhint" id="h-city">Ci serve per organizzare il sopralluogo.</div>
+                </div>
+              </div>
+              <div class="frow">
+                <div class="fgroup" data-req>
+                  <label class="flabel" for="f-name">Referente <span class="req">*</span></label>
+                  <input class="input" id="f-name" autocomplete="name" placeholder="Nome e cognome">
+                  <div class="ferr">Campo obbligatorio.</div>
+                </div>
+                <div class="fgroup">
+                  <label class="flabel" for="f-role">Ruolo <span class="opt">facoltativo</span></label>
+                  <input class="input" id="f-role" autocomplete="organization-title" placeholder="es. Responsabile attrezzeria">
+                </div>
+              </div>
+              <div class="frow">
+                <div class="fgroup" data-req>
+                  <label class="flabel" for="f-email">Email <span class="req">*</span></label>
+                  <input class="input" id="f-email" type="email" autocomplete="email" placeholder="nome@azienda.com" aria-describedby="h-email">
+                  <div class="ferr">Inserite un'email valida.</div>
+                  <div class="fhint" id="h-email">Vi scriviamo solo per il censimento, niente newsletter.</div>
+                </div>
+                <div class="fgroup">
+                  <label class="flabel" for="f-phone">Telefono <span class="opt">facoltativo</span></label>
+                  <input class="input" id="f-phone" type="tel" autocomplete="tel" placeholder="+39 …">
+                </div>
+              </div>
+              <input class="hp" id="f-website" tabindex="-1" autocomplete="off" aria-hidden="true">
+              <div class="fnav">
+                <button type="button" class="btn btn-ghost" data-prev>← Indietro</button>
+                <button type="button" class="btn btn-primary" data-next>Riepilogo <span class="arr">→</span></button>
+              </div>
+            </div>
+
+            <!-- STEP 4 · Riepilogo e invio -->
+            <div class="fstep" data-step="4">
+              <div id="summary" data-i18n-skip></div>
+              <div class="fgroup">
+                <label class="consent"><input type="checkbox" id="f-consent"><span>Acconsento al trattamento dei dati inseriti per essere ricontattato in merito al censimento degli stampi. <span style="color:var(--accent-bright)">*</span></span></label>
+                <div class="ferr">Serve il consenso per inviare la richiesta.</div>
+              </div>
+              <div class="send-err" id="send-err" hidden>Invio non riuscito. Riprovate tra poco, oppure scriveteci a <a id="err-mail" href="mailto:info@toolingreuse.com">info@toolingreuse.com</a>.</div>
+              <div class="fnav">
+                <button type="button" class="btn btn-ghost" data-prev>← Indietro</button>
+                <button type="button" class="btn btn-primary" id="send">Invia richiesta <span class="arr">→</span></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="done-state" aria-live="polite">
+            <div class="done-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#BFD8F0" stroke-width="2.4" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></div>
+            <h3>Richiesta inviata</h3>
+            <p>Grazie. Vi scriviamo a <b id="done-email" style="color:var(--steel-100);font-weight:600"></b> per fissare il sopralluogo.</p>
+            <div class="done-route" id="done-route" data-i18n-skip></div>
+            <ol class="next-steps" aria-label="Cosa succede ora">
+              <li><b>01</b><span><span class="ns-t">Vi contattiamo</span>Per email o telefono, per capire il magazzino e fissare una data.</span></li>
+              <li><b>02</b><span><span class="ns-t">Sopralluogo</span>Vediamo gli stampi dove sono custoditi, senza spostarli.</span></li>
+              <li><b>03</b><span><span class="ns-t">Una scheda per ogni stampo</span>Ricevete il quadro completo e la strada più vantaggiosa per ciascuno.</span></li>
+            </ol>
+            <p class="done-code">Codice richiesta <b id="done-code">—</b></p>
+          </div>
+        </div>
+
+        <p class="req-alt">Preferite scriverci? <a href="mailto:info@toolingreuse.com?subject=Richiesta%20censimento%20stampi%20fermi">info@toolingreuse.com</a></p>
+      </div>
+    </section>
   </main>
 
-  <script>
-    const translations = {
-      it: {
-        subtitle: 'Industrial Mold Assessment',
-        status: 'Project loading',
-        loading: 'Industrial survey loading',
-        microcopy: 'Stiamo raccogliendo informazioni sugli stampi industriali non utilizzati. Il questionario è il primo canale di validazione.',
-        cta: 'Accedi al questionario →'
-      },
-      en: {
-        subtitle: 'Industrial Mold Assessment',
-        status: 'Project loading',
-        loading: 'Industrial survey loading',
-        microcopy: 'We are collecting information on unused industrial molds. The questionnaire is the first validation channel.',
-        cta: 'Open the questionnaire →'
-      }
-    };
+  <template id="mold-tpl">
+    <div class="mold">
+      <div class="mold-head">
+        <div class="mold-title"><span class="mold-n">01</span>Stampo</div>
+        <button type="button" class="mold-rm">Rimuovi ×</button>
+      </div>
+      <div class="fgroup" data-mreq>
+        <span class="flabel">Tipologia <span class="req">*</span></span>
+        <select class="input" data-f="tipologia" aria-label="Tipologia di stampo"><option value="">— Selezionate —</option></select>
+        <div class="ferr">Scegliete la tipologia.</div>
+      </div>
+      <div class="fgroup">
+        <span class="flabel">Riferimento o descrizione <span class="opt">facoltativo</span></span>
+        <input class="input" data-f="riferimento" aria-label="Riferimento o descrizione" placeholder="es. Coperchio pompa, codice STM-2847">
+      </div>
+      <div class="fgroup">
+        <span class="flabel">Condizione</span>
+        <div class="chips-group" data-group="condizione" data-mode="single">
+          <button type="button" class="opt-chip" data-v="Funzionante" aria-pressed="false">Funzionante</button>
+          <button type="button" class="opt-chip" data-v="Da revisionare" aria-pressed="false">Da revisionare</button>
+          <button type="button" class="opt-chip" data-v="Non funzionante" aria-pressed="false">Non funzionante</button>
+          <button type="button" class="opt-chip" data-v="Non so" aria-pressed="false">Non so</button>
+        </div>
+        <span class="fnote" data-note="condizione" hidden>Dalla vostra prova nella sezione 03.</span>
+      </div>
+      <div class="fgroup">
+        <span class="flabel">Può restare dove si trova e produrre lì?</span>
+        <div class="chips-group" data-group="in_loco" data-mode="single">
+          <button type="button" class="opt-chip" data-v="Sì" aria-pressed="false">Sì</button>
+          <button type="button" class="opt-chip" data-v="No" aria-pressed="false">No</button>
+          <button type="button" class="opt-chip" data-v="Non so" aria-pressed="false">Non so</button>
+        </div>
+        <span class="fnote" data-note="in_loco" hidden>Dalla vostra prova nella sezione 03.</span>
+      </div>
+      <div class="fgroup">
+        <span class="flabel">Di chi è?</span>
+        <div class="chips-group" data-group="proprieta" data-mode="single">
+          <button type="button" class="opt-chip" data-v="Nostro" aria-pressed="false">Nostro</button>
+          <button type="button" class="opt-chip" data-v="Del cliente" aria-pressed="false">Del cliente</button>
+          <button type="button" class="opt-chip" data-v="Non chiara" aria-pressed="false">Non chiara</button>
+        </div>
+        <span class="fnote" data-note="proprieta" hidden>Come indicato al passo 1: cambiatelo se per questo stampo è diverso.</span>
+      </div>
+      <div class="mold-route" aria-live="polite" data-i18n-skip></div>
+      <details class="mold-more">
+        <summary>Dettagli tecnici <span class="opt">facoltativi · se li avete sotto mano</span></summary>
+        <div class="frow3">
+          <div class="fgroup"><span class="flabel">Anno <span class="opt">costr.</span></span><input class="input" data-f="anno" inputmode="numeric" aria-label="Anno di costruzione" placeholder="es. 2012"></div>
+          <div class="fgroup"><span class="flabel">Ultimo uso</span><input class="input" data-f="ultimo_uso" inputmode="numeric" aria-label="Anno dell'ultimo utilizzo" placeholder="es. 2019"></div>
+          <div class="fgroup"><span class="flabel">Pressa <span class="opt">t</span></span><input class="input" data-f="tonnellaggio" inputmode="numeric" aria-label="Tonnellaggio pressa richiesto" placeholder="es. 350"></div>
+        </div>
+        <div class="frow">
+          <div class="fgroup"><span class="flabel">Dimensioni <span class="opt">mm</span></span><input class="input" data-f="dimensioni" aria-label="Dimensioni in millimetri" placeholder="600 × 400 × 350"></div>
+          <div class="fgroup"><span class="flabel">Peso <span class="opt">kg</span></span><input class="input" data-f="peso" inputmode="numeric" aria-label="Peso in chilogrammi" placeholder="es. 850"></div>
+        </div>
+        <div class="fgroup">
+          <span class="flabel">Documentazione disponibile</span>
+          <div class="chips-group" data-group="documenti" data-mode="multi">
+            <button type="button" class="opt-chip" data-v="Disegno 2D" aria-pressed="false">Disegno 2D</button>
+            <button type="button" class="opt-chip" data-v="Modello 3D" aria-pressed="false">Modello 3D</button>
+            <button type="button" class="opt-chip" data-v="Storico manutenzione" aria-pressed="false">Storico manutenzione</button>
+            <button type="button" class="opt-chip" data-v="Certificato materiale" aria-pressed="false">Certificato materiale</button>
+          </div>
+        </div>
+      </details>
+    </div>
+  </template>
 
-    function setLanguage(lang){
-      const t = translations[lang];
-      document.documentElement.lang = lang;
-      document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t[el.dataset.i18n]);
-      document.querySelectorAll('.lang button').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+  <footer class="footer">
+    <div class="wrap">
+      <span>© 2026 ToolingReuse · Lombardia — Canton Ticino</span>
+      <a href="mailto:info@toolingreuse.com">info@toolingreuse.com</a>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    /* ═════════ LINGUA (IT / EN) ═════════
+       Il testo italiano resta nell'HTML; l'inglese arriva da EN. I valori inviati al Google Sheet restano in italiano. */
+    const EN = {
+"Chi siamo": "About us",
+"Obiettivo": "Goal",
+"Cosa si ottiene": "What you get",
+"Come": "How",
+"Richiedi il censimento": "Request the survey",
+"Censimento degli stampi fermi": "Idle mold survey",
+"· pilota aperto": "· pilot open",
+"Ogni stampo fermo": "Every idle mold",
+"è": "is",
+"capitale": "tied-up",
+"immobilizzato.": "capital.",
+"Scopriamo quanto vale.": "What is it worth?",
+"ToolingReuse aiuta aziende, terzisti e stampisti a mappare le attrezzature inutilizzate e a trovare, caso per caso, la soluzione economicamente più vantaggiosa.": "ToolingReuse helps companies, contract manufacturers and mold makers map their unused tooling and find, case by case, the most profitable solution.",
+"Richiedi un censimento gratuito": "Request a free survey",
+"Come funziona": "How it works",
+"stampi censiti gratis, anche uno solo": "molds surveyed free, even just one",
+"costo per l'azienda": "cost to your company",
+"dei risultati a voi": "of the results go to you",
+"Scheda stampo ·": "Mold record ·",
+"Stato: fermo": "Status: idle",
+"PROPRIETÀ": "OWNERSHIP",
+"da verificare": "to be verified",
+"del committente": "client’s",
+"non documentata": "undocumented",
+"ULTIMO USO": "LAST USED",
+"7 anni fa": "7 years ago",
+"4 anni fa": "4 years ago",
+"11 anni fa": "11 years ago",
+"CUSTODIA": "STORAGE",
+"costo non misurato": "cost not measured",
+"VALORE": "VALUE",
+"? → censimento": "? → survey",
+"Rilievo in corso": "Survey in progress",
+"Stampi fermi": "Idle molds",
+"Capacità inutilizzata": "Unused capacity",
+"Giacenze": "Stock parts",
+"Proprietà e custodia": "Ownership and storage",
+"Costo di stoccaggio": "Storage cost",
+"Compatibilità pressa": "Press compatibility",
+"Conto terzi": "Contract manufacturing",
+"Riciclo qualificato": "Qualified recycling",
+"Veniamo dall'industria e partiamo da un problema visto da vicino.": "We come from industry, and we start from a problem we have seen up close.",
+"ToolingReuse nasce da un caso concreto:": "ToolingReuse was born from a real case:",
+"un magazzino di stampi fermi da anni": "a warehouse of molds that had been idle for years",
+", ciascuno dal valore di decine di migliaia di euro, utilizzati una volta ogni sette anni. Occupano spazio, hanno un costo di custodia e nessuno sa con esattezza quanto valgano oggi, né cosa se ne possa fare.": ", each worth tens of thousands of euros and used once every seven years. They take up space, they cost money to store, and nobody knows exactly what they are worth today or what could be done with them.",
+"Parlando con stampisti, terzisti e produttori in Italia, in Svizzera e in Asia abbiamo trovato la stessa situazione ovunque:": "Talking with mold makers, contract manufacturers and producers in Italy, Switzerland and Asia, we found the same situation everywhere:",
+"stampi ancora funzionanti che restano fermi o finiscono a rottame": "molds that still work but sit idle or end up as scrap",
+", perché manca un modo semplice per capire quale sia l'alternativa più conveniente.": ", because there is no simple way to work out the most profitable alternative.",
+".000 €": ",000 €",
+"valore di uno stampo, nel caso da cui siamo partiti": "value of one mold in the case we started from",
+"1 ogni": "1 every",
+"anni": "years",
+"la frequenza con cui viene usato": "how often it is used",
+"Il team": "The team",
+"Operiamo tra Lombardia e Canton Ticino.": "We operate between Lombardy and Canton Ticino.",
+"L'obiettivo": "The goal",
+"Una rete attiva che incrocia domanda e offerta.": "An active network that matches supply and demand.",
+"Vogliamo connettere chi ha un capitale immobilizzato con chi necessita di capacità produttiva o di uno stampo, individuando di volta in volta la soluzione su misura più vantaggiosa per ciascun caso.": "We want to connect those who have capital tied up with those who need production capacity or a mold, finding each time the tailored solution that works best for each case.",
+"Offerta": "Supply",
+"Chi ha capitale immobilizzato": "Who has capital tied up",
+"Stampi e attrezzature fermi in magazzino": "Molds and tooling idle in storage",
+"Capacità produttiva inutilizzata": "Unused production capacity",
+"Giacenze di pezzi ancora riutilizzabili": "Stock of parts that can still be used",
+"incrocio e valutazione caso per caso": "case-by-case matching and valuation",
+"Domanda": "Demand",
+"Chi cerca una soluzione produttiva": "Who needs a production solution",
+"Pezzi finiti, senza investire in un nuovo stampo": "Finished parts, without investing in a new mold",
+"Capacità produttiva disponibile": "Available production capacity",
+"Uno stampo, anche non più reperibile": "A mold, even one that is no longer available",
+"Non un semplice catalogo statico, ma un": "Not a static catalogue, but a",
+"modello dinamico": "dynamic model",
+"che trasforma un costo o un vincolo in un'opportunità economica ponderata caso per caso.": "that turns a cost or a constraint into an economic opportunity, weighed case by case.",
+"Per ogni stampo, la strada più vantaggiosa.": "For every mold, the most profitable route.",
+"A seconda dello stato dell'attrezzatura, di chi ne detiene la proprietà e di dove si trova, le soluzioni possibili sono quattro. Provate a orientarvi:": "Depending on the tool’s condition, who owns it and where it is, there are four possible solutions. Try it out:",
+"Quale strada per il vostro stampo?": "Which route for your mold?",
+"Prova indicativa": "Indicative test",
+"Lo stampo è ancora funzionante?": "Does the mold still work?",
+"Sì": "Yes",
+"No": "No",
+"Può restare dove si trova?": "Can it stay where it is?",
+"Ci sono pezzi a magazzino?": "Are there parts in stock?",
+"Rispondete alle domande: evidenziamo le strade possibili.": "Answer the questions and we will highlight the possible routes.",
+"Azzera": "Reset",
+"Lo stampo resta dov'è": "The mold stays put",
+"Strada indicata": "Suggested route",
+"Produzione conto terzi": "Contract manufacturing",
+"Si vende la capacità produttiva, non l'attrezzatura: il pezzo viene prodotto dove lo stampo è già installato.": "You sell production capacity, not the tool: the part is made where the mold is already installed.",
+"Per chi": "For those who",
+"ha bisogno del pezzo finito e per chi vuole mettere a reddito un'attrezzatura ferma.": "need the finished part, and for those who want to earn from an idle tool.",
+"Lo stampo si sposta": "The mold moves",
+"Cessione o noleggio dello stampo": "Mold sale or rental",
+"Quando è opportuno o necessario, l'attrezzatura viene trasferita verso un'altra sede, in vendita o a noleggio.": "When it makes sense or is necessary, the tool moves to another site, sold or rented.",
+"deve liberarsene o ha bisogno di produrre in proprio.": "need to get rid of it or need to produce in-house.",
+"Valorizza le giacenze": "Make use of stock",
+"Vendita dei pezzi a magazzino": "Sale of stock parts",
+"Le giacenze residue ancora riutilizzabili tornano sul mercato invece di restare a scaffale.": "Leftover stock that can still be used goes back on the market instead of staying on the shelf.",
+"ha stock di componenti di prodotti fuori produzione.": "hold component stock for discontinued products.",
+"Libera spazio": "Free up space",
+"Smaltimento e riciclo qualificato": "Disposal and qualified recycling",
+"Quando lo stampo è obsoleto o inutilizzabile: spazio fisico liberato e gestione fiscale curata, oltre la logica della vendita a rottame.": "When the mold is obsolete or unusable: physical space freed up and tax treatment handled properly, beyond simply selling it as scrap.",
+"custodisce attrezzature a fine vita.": "store end-of-life tooling.",
+"Spazio liberato": "Space freed up",
+"Il magazzino torna produttivo.": "The warehouse becomes productive again.",
+"Custodia sotto controllo": "Storage under control",
+"Il costo di ogni stampo diventa un numero.": "The cost of every mold becomes a number.",
+"Valore recuperato": "Value recovered",
+"Un costo fermo diventa un'opportunità.": "An idle cost becomes an opportunity.",
+"Come vogliamo farlo": "How we want to do it",
+"Si parte da un censimento. Gratuito.": "It starts with a survey. Free.",
+"Prima di proporre qualsiasi soluzione servono dati reali. Per questo il primo passo è un censimento degli stampi fermi, senza costi per l'azienda: da uno fino a 30 stampi.": "Before proposing any solution we need real data. That is why the first step is a survey of your idle molds, at no cost to your company: from one up to 30 molds.",
+"Sopralluogo": "On-site visit",
+"Analizziamo insieme a voi gli stampi fermi, da uno fino a 30 nel primo censimento, direttamente dove sono custoditi.": "Together with you, we look at your idle molds, from one up to 30 in the first survey, right where they are stored.",
+"Una scheda per ogni stampo": "A record for every mold",
+"Per ciascuna attrezzatura registriamo le informazioni che servono a decidere.": "For each tool we record the information needed to decide.",
+"Stato e condizioni": "Status and condition",
+"Documentazione": "Documentation",
+"Risultati all'azienda": "Results to your company",
+"Ricevete il quadro completo del vostro magazzino. I dati restano vostri: a ToolingReuse va solo un aggregato anonimo.": "You receive the full picture of your warehouse. The data stays yours: ToolingReuse only keeps an anonymous aggregate.",
+"Soluzione su misura": "Tailored solution",
+"Sulla base dei dati individuiamo, per ogni stampo, la strada economicamente più vantaggiosa tra le quattro possibili.": "Based on the data, we identify for each mold the most profitable of the four possible routes.",
+"Il censimento pilota": "The pilot survey",
+"Gratuito": "Free",
+"da 1 a 30 stampi": "from 1 to 30 molds",
+"Nessun costo e nessun impegno successivo": "No cost and no further commitment",
+"Risultati consegnati all'azienda": "Results delivered to your company",
+"Dati riservati, solo aggregato anonimo": "Confidential data, anonymous aggregate only",
+"È pensato per": "Designed for",
+"Terzisti e stampisti che custodiscono stampi di terzi": "Contract manufacturers and mold makers who store other companies’ molds",
+"Aziende con attrezzeria interna e stampi fermi a magazzino": "Companies with an in-house tool shop and idle molds in storage",
+"Scegliete una tipologia di stampo": "Choose a mold type",
+"Avete stampi fermi in magazzino?": "Do you have idle molds in storage?",
+"Ogni mese di fermo è spazio e custodia che state già pagando. Raccontateci il vostro magazzino: bastano un paio di minuti, e la strada indicata compare man mano che rispondete. I dettagli li vediamo insieme al sopralluogo.": "Every idle month is space and storage you are already paying for. Tell us about your warehouse: it takes a couple of minutes, and the suggested route appears as you answer. We go through the details together during the visit.",
+"Magazzino": "Warehouse",
+"Stampi": "Molds",
+"Contatti": "Contacts",
+"Invio": "Send",
+"Strada indicata finora": "Suggested route so far",
+"Quanti stampi fermi avete, indicativamente?": "Roughly how many idle molds do you have?",
+"Oltre 50": "Over 50",
+"Scegliete una fascia.": "Choose a range.",
+"Di che tipologia?": "What type?",
+"anche più di una": "more than one is fine",
+"Indicate almeno una tipologia.": "Choose at least one type.",
+"Di chi sono gli stampi?": "Who owns the molds?",
+"Nostri": "Ours",
+"Di clienti, li custodiamo noi": "Our clients’, we store them",
+"Entrambi": "Both",
+"Non sempre è chiaro": "Not always clear",
+"Scegliete un'opzione.": "Choose an option.",
+"Se lo sapete · facoltative": "If you know · optional",
+"Sono ancora funzionanti, in generale?": "Do they still work, in general?",
+"Sì, per lo più": "Yes, mostly",
+"In parte": "Partly",
+"No, per lo più": "No, mostly",
+"Non so": "Don’t know",
+"Dalla vostra prova nella sezione 03.": "From your answers in section 03.",
+"Da quanto sono fermi, in media?": "How long have they been idle, on average?",
+"Meno di 1 anno": "Less than 1 year",
+"1–3 anni": "1–3 years",
+"3–7 anni": "3–7 years",
+"Oltre 7 anni": "Over 7 years",
+"Pezzi a magazzino?": "Parts in stock?",
+"Pezzi a magazzino": "Parts in stock",
+"Costo di stoccaggio noto?": "Storage cost known?",
+"Avanti": "Next",
+"Volete descriverne qualcuno? È facoltativo: bastano tipologia e condizione per vedere la strada indicata per quello stampo. I dettagli tecnici, se li avete sotto mano, ci aiutano a preparare il sopralluogo.": "Want to describe a few? It is optional: type and condition are enough to see the suggested route for that mold. Technical details, if you have them to hand, help us prepare the visit.",
+"+ Aggiungi uno stampo": "+ Add a mold",
+"+ Aggiungi un altro stampo": "+ Add another mold",
+"← Indietro": "← Back",
+"Salta, li vediamo al sopralluogo": "Skip, we’ll see them during the visit",
+"Azienda": "Company",
+"Campo obbligatorio.": "Required field.",
+"Sede": "Location",
+"Ci serve per organizzare il sopralluogo.": "We need it to organise the visit.",
+"Referente": "Contact person",
+"Ruolo": "Role",
+"facoltativo": "optional",
+"Email": "Email",
+"Inserite un'email valida.": "Enter a valid email address.",
+"Vi scriviamo solo per il censimento, niente newsletter.": "We only write to you about the survey. No newsletters.",
+"Telefono": "Phone",
+"Riepilogo": "Summary",
+"Acconsento al trattamento dei dati inseriti per essere ricontattato in merito al censimento degli stampi.": "I consent to the processing of the data entered so that I can be contacted about the mold survey.",
+"Serve il consenso per inviare la richiesta.": "Consent is required to send the request.",
+"Invio non riuscito. Riprovate tra poco, oppure scriveteci a": "Sending failed. Try again shortly, or write to us at",
+"Invia richiesta": "Send request",
+"Invio in corso…": "Sending…",
+"Richiesta inviata": "Request sent",
+"Grazie. Vi scriviamo a": "Thank you. We will write to you at",
+"per fissare il sopralluogo.": "to schedule the visit.",
+"Vi contattiamo": "We contact you",
+"Per email o telefono, per capire il magazzino e fissare una data.": "By email or phone, to understand your warehouse and set a date.",
+"Vediamo gli stampi dove sono custoditi, senza spostarli.": "We look at the molds where they are stored, without moving them.",
+"Ricevete il quadro completo e la strada più vantaggiosa per ciascuno.": "You receive the full picture and the most profitable route for each one.",
+"Codice richiesta": "Request code",
+"Preferite scriverci?": "Prefer to write to us?",
+"Stampo": "Mold",
+"Rimuovi ×": "Remove ×",
+"Tipologia": "Type",
+"— Selezionate —": "— Select —",
+"Scegliete la tipologia.": "Choose the type.",
+"Riferimento o descrizione": "Reference or description",
+"Condizione": "Condition",
+"Funzionante": "Working",
+"Da revisionare": "Needs overhaul",
+"Non funzionante": "Not working",
+"Può restare dove si trova e produrre lì?": "Can it stay where it is and produce there?",
+"Di chi è?": "Who owns it?",
+"Nostro": "Ours",
+"Del cliente": "The client’s",
+"Non chiara": "Unclear",
+"Come indicato al passo 1: cambiatelo se per questo stampo è diverso.": "As indicated in step 1: change it if this mold is different.",
+"Dettagli tecnici": "Technical details",
+"facoltativi · se li avete sotto mano": "optional · if you have them to hand",
+"Anno": "Year",
+"costr.": "built",
+"Ultimo uso": "Last used",
+"Pressa": "Press",
+"Dimensioni": "Dimensions",
+"Peso": "Weight",
+"Documentazione disponibile": "Available documentation",
+"Disegno 2D": "2D drawing",
+"Modello 3D": "3D model",
+"Storico manutenzione": "Maintenance history",
+"Certificato materiale": "Material certificate",
+"© 2026 ToolingReuse · Lombardia — Canton Ticino": "© 2026 ToolingReuse · Lombardy — Canton Ticino",
+"ToolingReuse, torna all'inizio": "ToolingReuse, back to top",
+"Sezioni": "Sections",
+"Avanzamento della richiesta": "Request progress",
+"Ragione sociale": "Company name",
+"Città": "City",
+"Nome e cognome": "Full name",
+"es. Responsabile attrezzeria": "e.g. Tool shop manager",
+"nome@azienda.com": "name@company.com",
+"Cosa succede ora": "What happens next",
+"Tipologia di stampo": "Mold type",
+"es. Coperchio pompa, codice STM-2847": "e.g. Pump cover, code STM-2847",
+"Anno di costruzione": "Year built",
+"es. 2012": "e.g. 2012",
+"Anno dell'ultimo utilizzo": "Year last used",
+"es. 2019": "e.g. 2019",
+"Tonnellaggio pressa richiesto": "Required press tonnage",
+"es. 350": "e.g. 350",
+"Dimensioni in millimetri": "Dimensions in millimetres",
+"Peso in chilogrammi": "Weight in kilograms",
+"es. 850": "e.g. 850",
+"Stampo a iniezione (plastica)": "Injection mold (plastics)",
+"Iniezione": "Injection",
+"Pressofusione (alluminio, zama, magnesio)": "Die casting (aluminium, zamak, magnesium)",
+"Pressofusione": "Die casting",
+"Lamiera: tranciatura, piegatura, imbutitura": "Sheet metal: blanking, bending, deep drawing",
+"Lamiera": "Sheet metal",
+"Lamiera: stampo progressivo": "Sheet metal: progressive die",
+"Progressivo": "Progressive",
+"Termoformatura": "Thermoforming",
+"Soffiaggio": "Blow molding",
+"Gomma / compressione": "Rubber / compression",
+"Gomma": "Rubber",
+"RIM / poliuretano": "RIM / polyurethane",
+"Forgiatura / stampaggio a caldo": "Forging / hot stamping",
+"Forgiatura": "Forging",
+"Fusione in conchiglia / gravità": "Gravity / permanent mold casting",
+"Conchiglia": "Gravity casting",
+"Altro": "Other",
+"Cessione o noleggio": "Sale or rental",
+"Completate le risposte per vedere la strada indicata.": "Complete your answers to see the suggested route.",
+"Strada indicata:": "Suggested route:",
+"La valutazione vera nasce dai dati del censimento.": "The real assessment comes from the survey data.",
+"Tipologia ·": "Type ·",
+"Rispondete a «Sono ancora funzionanti?» qui sotto per vederla.": "Answer “Do they still work?” below to see it.",
+"Aggiungete uno stampo e indicatene la condizione per vederla.": "Add a mold and give its condition to see it.",
+"Da definire con il censimento.": "To be defined with the survey.",
+"Strada indicata: da valutare al sopralluogo.": "Suggested route: to be assessed during the visit.",
+"Indicate la condizione per vedere la strada indicata per questo stampo.": "Give the condition to see the suggested route for this mold.",
+"Il magazzino": "The warehouse",
+"Modifica": "Edit",
+"Proprietà": "Ownership",
+"Tipologie": "Types",
+"Funzionanti": "Working",
+"Fermi da": "Idle for",
+"Costo di stoccaggio noto": "Storage cost known",
+"Stampi in dettaglio": "Molds in detail",
+"Nessuno: li vediamo insieme al sopralluogo.": "None: we’ll go through them together during the visit.",
+"produzione in loco": "on-site production",
+"anno": "year",
+"ultimo uso": "last used",
+"pressa": "press",
+"Dettagli da completare al sopralluogo": "Details to complete during the visit",
+"Da valutare al sopralluogo": "To be assessed during the visit",
+"Da definire con il censimento": "To be defined with the survey",
+"Indicazione di massima: la valutazione vera nasce dai dati del censimento.": "Rough indication: the real assessment comes from the survey data."
+};
+    const norm = s => s.replace(/\s+/g, ' ').trim();
+    let LANG = window.TR_LANG === 'en' ? 'en' : 'it';
+    const t = s => (LANG === 'en' && s && EN[s] !== undefined) ? EN[s] : s;
+    const origText = new WeakMap();
+    const ATTRS = ['aria-label', 'placeholder', 'title', 'alt'];
+    const attrKey = a => 'i18n' + a.replace(/(^|-)(.)/g, (m, d, c) => c.toUpperCase());
+    function translateTree(root) {
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => {
+        const p = n.parentElement;
+        if (!p || p.closest('script,style,[data-i18n-skip]')) return NodeFilter.FILTER_REJECT;
+        return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      } });
+      let n;
+      while ((n = w.nextNode())) {
+        if (!origText.has(n)) origText.set(n, n.nodeValue);
+        const o = origText.get(n), k = norm(o);
+        if (LANG === 'en' && EN[k] !== undefined) n.nodeValue = o.match(/^\s*/)[0] + EN[k] + o.match(/\s*$/)[0];
+        else n.nodeValue = o;
+      }
+      const els = [root, ...root.querySelectorAll('[aria-label],[placeholder],[title],[alt]')];
+      els.forEach(el => {
+        if (!el.getAttribute || el.closest('[data-i18n-skip]')) return;
+        ATTRS.forEach(a => {
+          if (!el.hasAttribute(a)) return;
+          const key = attrKey(a);
+          if (el.dataset[key] === undefined) el.dataset[key] = el.getAttribute(a);
+          const o = el.dataset[key];
+          el.setAttribute(a, LANG === 'en' && EN[norm(o)] !== undefined ? EN[norm(o)] : o);
+        });
+      });
+    }
+    const META = {
+      it: ['ToolingReuse | Censimento degli stampi fermi', 'ToolingReuse connette chi ha stampi fermi con chi cerca capacità produttiva o uno stampo. Si parte da un censimento gratuito: da 1 a 30 stampi.'],
+      en: ['ToolingReuse | Idle mold survey', 'ToolingReuse connects companies with idle molds to those who need production capacity or a mold. It starts with a free survey: from 1 to 30 molds.']
+    };
+    const langBtns = [...document.querySelectorAll('.lang-switch button')];
+    let refreshDynamic = () => {};
+    function setLang(l, save) {
+      LANG = l === 'en' ? 'en' : 'it';
+      document.documentElement.lang = LANG;
+      document.title = META[LANG][0];
+      const md = document.querySelector('meta[name="description"]');
+      if (md) md.setAttribute('content', META[LANG][1]);
+      translateTree(document.body);
+      langBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+      if (save) { try { localStorage.setItem('tr_lang', LANG); } catch (e) {} }
+      refreshDynamic();
+      document.documentElement.classList.remove('i18n-pending');
+    }
+    langBtns.forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang, true)));
+
+    const reduce = document.documentElement.classList.contains('reduced');
+    const fine = matchMedia('(pointer: fine)').matches;
+    const hasIO = 'IntersectionObserver' in window;
+
+    /* ── Contatori ── */
+    function countUp(el) {
+      const to = +el.dataset.to, t0 = performance.now(), dur = 1500;
+      (function tick(t) {
+        const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = Math.round(to * e);
+        if (k < 1) requestAnimationFrame(tick);
+      })(t0);
+    }
+    const startCounters = root => root.querySelectorAll('[data-to]').forEach(countUp);
+
+    /* ── Comparsa allo scroll ── */
+    const revealEls = document.querySelectorAll('.reveal');
+    if (hasIO) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('in');
+          startCounters(e.target);
+          io.unobserve(e.target);
+        });
+      }, { threshold: .12, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('in'));
+    }
+    setTimeout(() => startCounters(document.querySelector('.facts')), 900);
+
+    /* ── Scroll: header, barra, timeline, numeri di sezione ── */
+    const header = document.querySelector('.header');
+    const bar = document.querySelector('.progress i');
+    const stepsBox = document.querySelector('.steps');
+    const railFill = document.querySelector('.rail-fill');
+    const stepEls = [...document.querySelectorAll('.step')];
+    const bgNums = [...document.querySelectorAll('.sec-bg')];
+    let ticking = false;
+    function onScroll() {
+      const y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+      bar.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
+      header.classList.toggle('scrolled', y > 24);
+      const line = innerHeight * 0.62;
+      const r = stepsBox.getBoundingClientRect();
+      const p = Math.max(0, Math.min(1, (line - r.top - 24) / (r.height - 48)));
+      railFill.style.transform = 'scaleY(' + p + ')';
+      stepEls.forEach(s => s.classList.toggle('lit', s.querySelector('.step-n').getBoundingClientRect().top + 24 <= line));
+      if (!reduce) bgNums.forEach(el => {
+        el.style.transform = 'translateY(' + (el.parentElement.getBoundingClientRect().top * -0.14).toFixed(1) + 'px)';
+      });
+      ticking = false;
+    }
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    addEventListener('resize', onScroll);
+    onScroll();
+
+    /* ── Menu: sezione attiva ── */
+    const navLinks = [...document.querySelectorAll('.nav a[href^="#"]:not(.btn)')];
+    if (hasIO) {
+      const navIo = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      navLinks.forEach(a => { const s = document.querySelector(a.getAttribute('href')); if (s) navIo.observe(s); });
     }
 
-    document.querySelectorAll('.lang button').forEach(button => {
-      button.addEventListener('click', () => setLanguage(button.dataset.lang));
+    /* ── Hero: luce e inclinazione col mouse ── */
+    const hero = document.querySelector('.hero');
+    const bp = document.querySelector('.bp');
+    if (fine && !reduce) {
+      hero.addEventListener('pointermove', e => {
+        const r = hero.getBoundingClientRect();
+        hero.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        hero.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        const b = bp.getBoundingClientRect();
+        const rx = ((e.clientY - (b.top + b.height / 2)) / innerHeight) * -5;
+        const ry = ((e.clientX - (b.left + b.width / 2)) / innerWidth) * 7;
+        bp.style.transform = 'perspective(1200px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg)';
+      });
+      hero.addEventListener('pointerleave', () => { bp.style.transform = ''; });
+    }
+
+    /* ── Blueprint: mirino con coordinate ── */
+    const stage = document.querySelector('.bp-stage');
+    const xv = stage.querySelector('.xh-v'), xh = stage.querySelector('.xh-h'), xc = stage.querySelector('.xh-c');
+    const outX = document.getElementById('rx'), outY = document.getElementById('ry');
+    const MM = 596 / 300;
+    let target = null, cur = [210, 190], stageVisible = true, running = false;
+    function place(sx, sy) {
+      const px = sx / 560 * stage.clientWidth, py = sy / 380 * stage.clientHeight;
+      xv.style.transform = 'translateX(' + px + 'px)';
+      xh.style.transform = 'translateY(' + py + 'px)';
+      xc.style.transform = 'translate(' + px + 'px,' + py + 'px)';
+      outX.textContent = ((sx - 60) * MM).toFixed(1);
+      outY.textContent = ((sy - 56) * MM).toFixed(1);
+    }
+    stage.addEventListener('pointermove', e => {
+      const r = stage.getBoundingClientRect();
+      target = [(e.clientX - r.left) / r.width * 560, (e.clientY - r.top) / r.height * 380];
+      if (reduce) place(target[0], target[1]);
     });
+    stage.addEventListener('pointerleave', () => { target = null; });
+    function loop(t) {
+      if (!stageVisible) { running = false; return; }
+      const k = t / 1000;
+      const goal = target || [210 + 150 * Math.sin(k * .55), 190 + 118 * Math.sin(k * .83 + 1)];
+      cur[0] += (goal[0] - cur[0]) * .12;
+      cur[1] += (goal[1] - cur[1]) * .12;
+      place(cur[0], cur[1]);
+      requestAnimationFrame(loop);
+    }
+    if (reduce) place(210, 190);
+    else if (hasIO) {
+      new IntersectionObserver(([e]) => {
+        stageVisible = e.isIntersecting;
+        if (stageVisible && !running) { running = true; requestAnimationFrame(loop); }
+      }).observe(stage);
+    } else { running = true; requestAnimationFrame(loop); }
+
+    const molds = [
+      { id: 'STM-0417', uso: '7 anni fa', prop: 'da verificare' },
+      { id: 'STM-1182', uso: '4 anni fa', prop: 'del committente' },
+      { id: 'DIE-2290', uso: '11 anni fa', prop: 'non documentata' }
+    ];
+    const mFields = { id: document.getElementById('m-id'), uso: document.getElementById('m-uso'), prop: document.getElementById('m-prop') };
+    let mi = 0;
+    if (!reduce) setInterval(() => {
+      if (document.hidden || !stageVisible) return;
+      mi = (mi + 1) % molds.length;
+      Object.values(mFields).forEach(el => { el.classList.remove('flick'); void el.getBoundingClientRect(); el.classList.add('flick'); });
+      setTimeout(() => { Object.keys(mFields).forEach(k => { mFields[k].textContent = k === 'id' ? molds[mi][k] : t(molds[mi][k]); }); }, 150);
+    }, 4200);
+
+    /* ── Configuratore "quale strada per il vostro stampo?" ── */
+    const cfg = { q1: null, q2: null, q3: null };
+    const segs = [...document.querySelectorAll('.seg')];
+    const q2wrap = document.getElementById('q2wrap');
+    const solCards = [...document.querySelectorAll('.sol')];
+    const resultText = document.getElementById('result-text');
+    const routeNames = { 'conto-terzi': 'Produzione conto terzi', 'cessione': 'Cessione o noleggio', 'giacenze': 'Vendita dei pezzi a magazzino', 'smaltimento': 'Smaltimento e riciclo qualificato' };
+    function updateCfg() {
+      const q2off = cfg.q1 === 'no';
+      if (q2off) cfg.q2 = null;
+      q2wrap.classList.toggle('off', q2off);
+      segs.forEach(seg => seg.querySelectorAll('button').forEach(b => {
+        b.setAttribute('aria-pressed', String(cfg[seg.dataset.q] === b.dataset.v));
+        if (seg.dataset.q === 'q2') b.disabled = q2off;
+      }));
+      const m = new Set();
+      if (cfg.q1 === 'no') m.add('smaltimento');
+      else if (cfg.q2 === 'si') m.add('conto-terzi');
+      else if (cfg.q2 === 'no') m.add('cessione');
+      else if (cfg.q1 === 'si') { m.add('conto-terzi'); m.add('cessione'); }
+      if (cfg.q3 === 'si') m.add('giacenze');
+      const any = cfg.q1 || cfg.q2 || cfg.q3;
+      solCards.forEach(c => {
+        const hit = m.has(c.dataset.route);
+        c.classList.toggle('is-match', !!any && hit);
+        c.classList.toggle('is-dim', !!any && m.size > 0 && !hit);
+      });
+      if (!any) resultText.textContent = t('Rispondete alle domande: evidenziamo le strade possibili.');
+      else if (!m.size) resultText.textContent = t('Completate le risposte per vedere la strada indicata.');
+      else resultText.innerHTML = t('Strada indicata:') + ' <b>' + [...m].map(k => t(routeNames[k])).join(' + ') + '</b>. ' + t('La valutazione vera nasce dai dati del censimento.');
+    }
+    let cfgUsed = false;
+    segs.forEach(seg => seg.addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if (!b || b.disabled) return;
+      cfg[seg.dataset.q] = cfg[seg.dataset.q] === b.dataset.v ? null : b.dataset.v;
+      cfgUsed = true;
+      updateCfg();
+      syncFromCfg();
+    }));
+    document.getElementById('reset').addEventListener('click', () => { cfg.q1 = cfg.q2 = cfg.q3 = null; updateCfg(); syncFromCfg(); });
+
+    if (fine) solCards.forEach(c => c.addEventListener('pointermove', e => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--x', (e.clientX - r.left) + 'px');
+      c.style.setProperty('--y', (e.clientY - r.top) + 'px');
+    }));
+
+    /* ═════════ MODULO RICHIESTA CENSIMENTO ═════════ */
+    // Stesso Web App del Google Sheet usato dall'intake form
+    const ENDPOINT = 'https://script.google.com/macros/s/AKfycby3OGa6S170YgbQhPhS5ixmnsT_XfSuyAY1jyMepsPXPyxpU_H8lzG8CqmXxrYgXtzSkg/exec';
+
+    // [slug, nome completo, etichetta breve]. Le immagini sono in img/stampi/:
+    // una foto in img/stampi/foto/<slug>.webp o .jpg prende il posto dell'illustrazione <slug>.svg
+    const TYPES = [
+      ['iniezione', 'Stampo a iniezione (plastica)', 'Iniezione'],
+      ['pressofusione', 'Pressofusione (alluminio, zama, magnesio)', 'Pressofusione'],
+      ['lamiera', 'Lamiera: tranciatura, piegatura, imbutitura', 'Lamiera'],
+      ['progressivo', 'Lamiera: stampo progressivo', 'Progressivo'],
+      ['termoformatura', 'Termoformatura', 'Termoformatura'],
+      ['soffiaggio', 'Soffiaggio', 'Soffiaggio'],
+      ['gomma', 'Gomma / compressione', 'Gomma'],
+      ['rim', 'RIM / poliuretano', 'RIM / PU'],
+      ['forgiatura', 'Forgiatura / stampaggio a caldo', 'Forgiatura'],
+      ['conchiglia', 'Fusione in conchiglia / gravità', 'Conchiglia'],
+      ['altro', 'Altro', 'Altro']
+    ];
+    const typeLabel = Object.fromEntries(TYPES.map(t => [t[0], t[1]]));
+
+    const card = document.getElementById('form-card');
+    const fsteps = [...card.querySelectorAll('.fstep')];
+    const stps = [...card.querySelectorAll('.stp')];
+    const step1 = fsteps[0];
+    const moldList = document.getElementById('mold-list');
+    const moldTpl = document.getElementById('mold-tpl');
+    const addBtn = document.getElementById('add-mold');
+    const MAX_MOLDS = 10;
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const step2Lbl = document.querySelector('#step2-next .lbl');
+    card.dataset.cur = '1';
+
+    /* Tracciamento dei passaggi (solo numero del passo + ID di sessione casuale, nessun dato personale).
+       Richiede apps-script/Codice_v3.gs (scheda "Funnel"): con lo script v2 queste righe finirebbero in "Leads".
+       Spento in locale, così le prove non sporcano il foglio. */
+    const TRACK_STEPS = true;
+    const TRACK = TRACK_STEPS && location.protocol !== 'file:' && !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+    const sid = Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+    const tracked = new Set();
+    function track(ev) {
+      if (tracked.has(ev)) return;
+      tracked.add(ev);
+      if (!TRACK) return;
+      try {
+        fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', keepalive: true, body: JSON.stringify({
+          form: 'funnel_v4', sid, evento: ev, cfg_usato: cfgUsed ? 'Sì' : 'No', lingua: LANG,
+          n_stampi_dettagliati: moldList.children.length, page: location.pathname
+        }) }).catch(() => {});
+      } catch (e) {}
+    }
+    if (hasIO) new IntersectionObserver((entries, obs) => {
+      if (entries.some(e => e.isIntersecting)) { track('modulo_visto'); obs.disconnect(); }
+    }, { threshold: .3 }).observe(card);
+
+    /* Scelte precompilate: solo con risposte già date dall'utente (configuratore, passo 1).
+       Le domande che stiamo misurando restano senza default. */
+    const pick = (root, key, v) => root.querySelectorAll('[data-group="' + key + '"] .opt-chip')
+      .forEach(c => c.setAttribute('aria-pressed', String(c.dataset.v === v)));
+    const note = (root, key, on) => { const n = root.querySelector('[data-note="' + key + '"]'); if (n) n.hidden = !on; };
+    const touched = new Set();   // gruppi del passo 1 scelti a mano: il configuratore non li sovrascrive
+    const fromCfg = new Set();   // gruppi del passo 1 precompilati dal configuratore
+    function syncFromCfg() {
+      const map = {
+        stato: cfg.q1 === 'si' ? 'Sì, per lo più' : cfg.q1 === 'no' ? 'No, per lo più' : '',
+        giacenze: cfg.q3 === 'si' ? 'Sì' : cfg.q3 === 'no' ? 'No' : ''
+      };
+      Object.keys(map).forEach(k => {
+        if (touched.has(k)) return;
+        if (map[k]) { pick(step1, k, map[k]); fromCfg.add(k); note(step1, k, true); }
+        else if (fromCfg.has(k)) { pick(step1, k, ''); fromCfg.delete(k); note(step1, k, false); }
+      });
+      updateLiveRoute();
+    }
+
+    document.getElementById('type-chips').innerHTML = TYPES.map(t =>
+      '<button type="button" class="opt-chip" data-v="' + t[0] + '" aria-pressed="false">' + t[2] + '</button>').join('');
+
+    /* Sfondo che cambia con la tipologia */
+    const bgLayers = [...document.querySelectorAll('.bg-layer')];
+    const bgCaption = document.getElementById('bg-caption');
+    const bgCache = {};
+    let bgFront = 0, bgSlug = null, bgToken = 0;
+    function findImage(slug) {
+      if (bgCache[slug]) return Promise.resolve(bgCache[slug]);
+      const tries = [
+        ['img/stampi/foto/' + slug + '.webp', 'photo'],
+        ['img/stampi/foto/' + slug + '.jpg', 'photo'],
+        ['img/stampi/' + slug + '.svg', 'illus']
+      ];
+      return new Promise(resolve => {
+        let i = 0;
+        (function next() {
+          if (i >= tries.length) return resolve(null);
+          const [src, kind] = tries[i++];
+          const img = new Image();
+          img.onload = () => resolve(bgCache[slug] = { src, kind });
+          img.onerror = next;
+          img.src = src;
+        })();
+      });
+    }
+    function setBg(slug) {
+      if (!slug || slug === bgSlug) return;
+      bgSlug = slug;
+      const token = ++bgToken;
+      bgCaption.textContent = t('Tipologia ·') + ' ' + t(typeLabel[slug]);
+      findImage(slug).then(found => {
+        if (!found || token !== bgToken) return;
+        const next = bgLayers[1 - bgFront];
+        next.className = 'bg-layer ' + found.kind;
+        next.innerHTML = '<img alt="" src="' + found.src + '">';
+        void next.offsetWidth;
+        next.classList.add('on');
+        bgLayers[bgFront].classList.remove('on');
+        bgFront = 1 - bgFront;
+      });
+    }
+
+    /* Pulsanti a scelta (singola o multipla) */
+    document.addEventListener('click', e => {
+      const chip = e.target.closest('.opt-chip');
+      if (!chip) return;
+      const group = chip.closest('.chips-group');
+      const wasOn = chip.getAttribute('aria-pressed') === 'true';
+      if (group.dataset.mode === 'single') group.querySelectorAll('.opt-chip').forEach(c => c.setAttribute('aria-pressed', 'false'));
+      chip.setAttribute('aria-pressed', String(!wasOn));
+      const fg = group.closest('.fgroup');
+      if (fg) fg.classList.remove('err');
+      if (group.dataset.group === 'tipologie' && !wasOn) setBg(chip.dataset.v);
+      const key = group.dataset.group;
+      if (step1.contains(chip)) { touched.add(key); fromCfg.delete(key); note(step1, key, false); track('passo1_iniziato'); }
+      const mold = chip.closest('.mold');
+      if (mold) { note(mold, key, false); updateMoldRoute(mold); }
+      updateLiveRoute();
+    });
+    document.addEventListener('input', e => {
+      const fg = e.target.closest && e.target.closest('.fgroup');
+      if (fg) fg.classList.remove('err');
+    });
+
+    /* Schede stampo */
+    function renumberMolds() {
+      [...moldList.children].forEach((m, i) => { m.querySelector('.mold-n').textContent = String(i + 1).padStart(2, '0'); });
+      const n = moldList.children.length;
+      addBtn.hidden = n >= MAX_MOLDS;
+      addBtn.textContent = t(n ? '+ Aggiungi un altro stampo' : '+ Aggiungi uno stampo');
+      step2Lbl.textContent = t(n ? 'Avanti' : 'Salta, li vediamo al sopralluogo');
+      updateLiveRoute();
+    }
+    const OWNER_FROM_STEP1 = { 'Nostri': 'Nostro', 'Di clienti, li custodiamo noi': 'Del cliente' };
+    function addMold() {
+      const node = moldTpl.content.firstElementChild.cloneNode(true);
+      const sel = node.querySelector('[data-f="tipologia"]');
+      sel.insertAdjacentHTML('beforeend', TYPES.map(ty => '<option value="' + ty[0] + '">' + ty[1] + '</option>').join(''));
+      translateTree(node);
+      // Tipologia: la prima tra quelle scelte al passo 1 non ancora usata in un'altra scheda
+      const chosen = [...step1.querySelectorAll('[data-group="tipologie"] [aria-pressed="true"]')].map(b => b.dataset.v);
+      const used = [...moldList.querySelectorAll('[data-f="tipologia"]')].map(s => s.value);
+      sel.value = chosen.find(t => !used.includes(t)) || (chosen.length === 1 ? chosen[0] : '');
+      // Proprietà: quella indicata al passo 1, se univoca
+      const owner = OWNER_FROM_STEP1[one(step1, 'proprieta')];
+      if (owner) { pick(node, 'proprieta', owner); note(node, 'proprieta', true); }
+      // Prima scheda: condizione e produzione in loco dalla prova della sezione 03
+      if (!moldList.children.length) {
+        const cond = cfg.q1 === 'si' ? 'Funzionante' : cfg.q1 === 'no' ? 'Non funzionante' : '';
+        const loco = cfg.q1 !== 'no' && cfg.q2 ? (cfg.q2 === 'si' ? 'Sì' : 'No') : '';
+        if (cond) { pick(node, 'condizione', cond); note(node, 'condizione', true); }
+        if (loco) { pick(node, 'in_loco', loco); note(node, 'in_loco', true); }
+      }
+      sel.addEventListener('change', () => { setBg(sel.value); sel.closest('.fgroup').classList.remove('err'); });
+      node.addEventListener('focusin', () => setBg(sel.value));
+      node.addEventListener('pointerenter', () => setBg(sel.value));
+      node.querySelector('.mold-rm').addEventListener('click', () => { node.remove(); renumberMolds(); });
+      moldList.appendChild(node);
+      updateMoldRoute(node);
+      renumberMolds();
+      setBg(sel.value);
+      sel.focus({ preventScroll: true });
+      node.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    }
+    addBtn.addEventListener('click', addMold);
+
+    /* Navigazione tra i passaggi */
+    let curStep = 1;
+    function go(n) {
+      fsteps.forEach(s => s.classList.toggle('active', +s.dataset.step === n));
+      stps.forEach((s, i) => { s.classList.toggle('active', i + 1 === n); s.classList.toggle('done', i + 1 < n); });
+      curStep = n;
+      card.dataset.cur = String(n);
+      if (n > 1) track('passo' + n);
+      updateLiveRoute();
+      if (n === 4) renderSummary();
+      const top = card.getBoundingClientRect().top;
+      if (top < 70 || top > innerHeight * .5) window.scrollTo({ top: scrollY + top - 90, behavior: reduce ? 'auto' : 'smooth' });
+    }
+    function setErr(fg, bad) { fg.classList.toggle('err', bad); return !bad; }
+    function validate(n) {
+      const root = fsteps[n - 1];
+      let ok = true;
+      if (n === 1) root.querySelectorAll('[data-req]').forEach(fg => {
+        ok = setErr(fg, !fg.querySelector('[aria-pressed="true"]')) && ok;
+      });
+      if (n === 2) moldList.querySelectorAll('[data-mreq]').forEach(fg => {
+        ok = setErr(fg, !fg.querySelector('select').value) && ok;
+      });
+      if (n === 3) root.querySelectorAll('[data-req]').forEach(fg => {
+        const inp = fg.querySelector('input'), v = inp.value.trim();
+        const bad = !v || (inp.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+        ok = setErr(fg, bad) && ok;
+      });
+      if (n === 4) {
+        const c = document.getElementById('f-consent');
+        ok = setErr(c.closest('.fgroup'), !c.checked);
+      }
+      if (!ok) {
+        const first = root.querySelector('.err');
+        if (first) first.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+      }
+      return ok;
+    }
+    card.addEventListener('click', e => {
+      if (e.target.closest('[data-next]')) { if (validate(curStep)) go(curStep + 1); }
+      else if (e.target.closest('[data-prev]')) go(curStep - 1);
+      else { const ed = e.target.closest('[data-edit]'); if (ed) go(+ed.dataset.edit); }
+    });
+    document.getElementById('f-consent').addEventListener('change', e => e.target.closest('.fgroup').classList.remove('err'));
+
+    /* Lettura dei dati */
+    const one = (root, k) => { const b = root.querySelector('[data-group="' + k + '"] [aria-pressed="true"]'); return b ? b.dataset.v : ''; };
+    const many = (root, k) => [...root.querySelectorAll('[data-group="' + k + '"] [aria-pressed="true"]')].map(b => b.dataset.v);
+    const val = id => document.getElementById(id).value.trim();
+    function routesFor(m) {
+      if (m.condizione === 'Non funzionante') return ['Smaltimento e riciclo qualificato'];
+      if (m.condizione === 'Funzionante' || m.condizione === 'Da revisionare') {
+        if (m.in_loco === 'Sì') return ['Produzione conto terzi'];
+        if (m.in_loco === 'No') return ['Cessione o noleggio'];
+        return ['Produzione conto terzi', 'Cessione o noleggio'];
+      }
+      return [];
+    }
+    // Strade a livello di magazzino, dalle risposte generali del passo 1
+    function warehouseRoutes(stato, giacenze) {
+      const r = [];
+      if (stato === 'Sì, per lo più' || stato === 'In parte') {
+        if (cfg.q2 === 'si') r.push('Produzione conto terzi');
+        else if (cfg.q2 === 'no') r.push('Cessione o noleggio');
+        else r.push('Produzione conto terzi', 'Cessione o noleggio');
+      }
+      if (stato === 'In parte' || stato === 'No, per lo più') r.push('Smaltimento e riciclo qualificato');
+      if (giacenze === 'Sì') r.push('Vendita dei pezzi a magazzino');
+      return r;
+    }
+    const ROUTE_ORDER = ['Produzione conto terzi', 'Cessione o noleggio', 'Vendita dei pezzi a magazzino', 'Smaltimento e riciclo qualificato'];
+    function readMold(c, i) {
+      const f = k => c.querySelector('[data-f="' + k + '"]').value.trim();
+      const m = {
+        n: i + 1, tipologia: typeLabel[f('tipologia')] || '', riferimento: f('riferimento'),
+        anno: f('anno'), ultimo_uso: f('ultimo_uso'), tonnellaggio_t: f('tonnellaggio'),
+        dimensioni: f('dimensioni'), peso_kg: f('peso'),
+        condizione: one(c, 'condizione'), in_loco: one(c, 'in_loco'),
+        documenti: many(c, 'documenti').join(', '), proprieta: one(c, 'proprieta')
+      };
+      m.strada = routesFor(m);
+      return m;
+    }
+    function collect() {
+      const moldData = [...moldList.querySelectorAll('.mold')].map(readMold);
+      const stato = one(step1, 'stato');
+      const giacenze = one(step1, 'giacenze');
+      const routes = new Set(warehouseRoutes(stato, giacenze));
+      moldData.forEach(m => m.strada.forEach(r => routes.add(r)));
+      return {
+        n_stampi: one(step1, 'n_stampi'),
+        tipologie: many(step1, 'tipologie').map(s => typeLabel[s]),
+        proprieta: one(step1, 'proprieta'),
+        stato_generale: stato,
+        fermi_da: one(step1, 'fermi_da'),
+        giacenze, costo_stoccaggio: one(step1, 'costo'),
+        molds: moldData, routes: ROUTE_ORDER.filter(r => routes.has(r)),
+        company: val('f-company'), city: val('f-city'), contact_name: val('f-name'),
+        role: val('f-role'), email: val('f-email'), phone: val('f-phone')
+      };
+    }
+
+    /* Riepilogo */
+    const kv = (k, v) => v ? '<div><div class="sum-k">' + k + '</div><div class="sum-v">' + esc(v) + '</div></div>' : '';
+    const chipsHtml = (list, empty) => list.length
+      ? list.map(r => '<span class="route-chip">' + esc(t(r)) + '</span>').join('')
+      : '<span class="route-chip muted">' + esc(t(empty)) + '</span>';
+    /* Strada indicata in tempo reale: il valore arriva prima della richiesta dei contatti */
+    const liveRoute = document.getElementById('live-route');
+    function updateLiveRoute() {
+      const d = collect();
+      if (d.routes.length) { liveRoute.innerHTML = chipsHtml(d.routes, ''); return; }
+      const hint = t(curStep === 1 ? 'Rispondete a «Sono ancora funzionanti?» qui sotto per vederla.'
+        : curStep === 2 ? 'Aggiungete uno stampo e indicatene la condizione per vederla.'
+        : 'Da definire con il censimento.');
+      liveRoute.innerHTML = '<span class="lr-hint">' + hint + '</span>';
+    }
+    function updateMoldRoute(node) {
+      const m = readMold(node, 0);
+      const box = node.querySelector('.mold-route');
+      box.innerHTML = m.strada.length ? t('Strada indicata:') + ' ' + chipsHtml(m.strada, '')
+        : m.condizione ? t('Strada indicata: da valutare al sopralluogo.')
+        : t('Indicate la condizione per vedere la strada indicata per questo stampo.');
+    }
+
+    function renderSummary() {
+      const d = collect();
+      const top = (title, step) => '<div class="sum-top"><span class="sum-title">' + t(title) + '</span>'
+        + (step ? '<button type="button" class="sum-edit" data-edit="' + step + '">' + t('Modifica') + '</button>' : '') + '</div>';
+      let h = '<div class="sum-block">' + top('Il magazzino', 1) + '<div class="sum-grid">'
+        + kv(t('Stampi fermi'), t(d.n_stampi)) + kv(t('Proprietà'), t(d.proprieta)) + kv(t('Tipologie'), d.tipologie.map(t).join(', '))
+        + kv(t('Funzionanti'), t(d.stato_generale)) + kv(t('Fermi da'), t(d.fermi_da)) + kv(t('Pezzi a magazzino'), t(d.giacenze))
+        + kv(t('Costo di stoccaggio noto'), t(d.costo_stoccaggio))
+        + '</div></div>';
+      h += '<div class="sum-block">' + top('Stampi in dettaglio', 2);
+      if (!d.molds.length) h += '<p class="sum-empty">' + t('Nessuno: li vediamo insieme al sopralluogo.') + '</p>';
+      d.molds.forEach(m => {
+        const det = [t(m.condizione), m.in_loco && t('produzione in loco') + ': ' + t(m.in_loco), m.anno && t('anno') + ' ' + m.anno,
+          m.ultimo_uso && t('ultimo uso') + ' ' + m.ultimo_uso, m.tonnellaggio_t && t('pressa') + ' ' + m.tonnellaggio_t + ' t'].filter(Boolean).join(' · ');
+        h += '<div class="sum-mold"><div class="sum-mold-h"><span>' + String(m.n).padStart(2, '0') + '</span>' + esc(t(m.tipologia))
+          + (m.riferimento ? ' · ' + esc(m.riferimento) : '') + '</div><div class="sum-mold-d">' + esc(det || t('Dettagli da completare al sopralluogo'))
+          + '</div>' + chipsHtml(m.strada, 'Da valutare al sopralluogo') + '</div>';
+      });
+      h += '</div>';
+      h += '<div class="sum-block strada">' + top('Strada indicata', 0)
+        + chipsHtml(d.routes, 'Da definire con il censimento')
+        + '<p class="sum-note">' + t('Indicazione di massima: la valutazione vera nasce dai dati del censimento.') + '</p></div>';
+      h += '<div class="sum-block">' + top('Contatti', 3) + '<div class="sum-grid">'
+        + kv(t('Azienda'), d.company) + kv(t('Sede'), d.city) + kv(t('Referente'), d.contact_name + (d.role ? ' · ' + d.role : ''))
+        + kv(t('Email'), d.email) + kv(t('Telefono'), d.phone) + '</div></div>';
+      document.getElementById('summary').innerHTML = h;
+    }
+
+    /* Invio al Google Sheet */
+    const sendBtn = document.getElementById('send');
+    let lastRoutes = [];
+    const sendErr = document.getElementById('send-err');
+    sendBtn.addEventListener('click', async () => {
+      if (!validate(4)) return;
+      const d = collect();
+      const rid = 'TR-' + Date.now().toString(36).toUpperCase();
+      const done = () => {
+        document.getElementById('done-code').textContent = rid;
+        document.getElementById('done-email').textContent = d.email;
+        lastRoutes = d.routes;
+        document.getElementById('done-route').innerHTML = d.routes.length ? chipsHtml(d.routes, '') : '';
+        card.classList.add('sent');
+        track('inviato');
+        go(4);
+      };
+      if (val('f-website')) { done(); return; } // campo trappola per i bot
+
+      sendErr.hidden = true;
+      sendBtn.disabled = true;
+      sendBtn.firstChild.textContent = t('Invio in corso…') + ' ';
+      const payload = {
+        form: 'richiesta_censimento_v3', request_id: rid,
+        company: d.company, contact_name: d.contact_name, email: d.email, phone: d.phone, role: d.role, city: d.city,
+        n_stampi: d.n_stampi, tipologie: d.tipologie.join(', '), proprieta: d.proprieta, fermi_da: d.fermi_da,
+        giacenze: d.giacenze, costo_stoccaggio: d.costo_stoccaggio,
+        n_stampi_dettagliati: d.molds.length, strade_indicate: d.routes.join(', '),
+        consent: true, page: location.pathname,
+        stato_generale: d.stato_generale, cfg_usato: cfgUsed ? 'Sì' : 'No', sid, lingua: LANG,
+        molds: d.molds.map(m => ({
+          tipologia: m.tipologia, riferimento: m.riferimento, anno: m.anno, ultimo_uso: m.ultimo_uso,
+          dimensioni: m.dimensioni, peso_kg: m.peso_kg, tonnellaggio_t: m.tonnellaggio_t,
+          condizione: m.condizione, in_loco: m.in_loco, documenti: m.documenti, proprieta: m.proprieta,
+          strada_indicata: m.strada.join(', ')
+        }))
+      };
+      try {
+        await fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        done();
+      } catch (err) {
+        const body = 'Azienda: ' + d.company + '\nReferente: ' + d.contact_name + '\nSede: ' + d.city
+          + '\nStampi fermi: ' + d.n_stampi + '\nTipologie: ' + d.tipologie.join(', ') + '\nProprietà: ' + d.proprieta;
+        document.getElementById('err-mail').href = 'mailto:info@toolingreuse.com?subject='
+          + encodeURIComponent('Richiesta censimento stampi fermi') + '&body=' + encodeURIComponent(body);
+        sendErr.hidden = false;
+        sendBtn.disabled = false;
+        sendBtn.firstChild.textContent = t('Invia richiesta') + ' ';
+      }
+    });
+
+    refreshDynamic = () => {
+      updateCfg();
+      renumberMolds();
+      [...moldList.children].forEach(updateMoldRoute);
+      bgCaption.textContent = bgSlug ? t('Tipologia ·') + ' ' + t(typeLabel[bgSlug]) : t('Scegliete una tipologia di stampo');
+      Object.keys(mFields).forEach(k => { mFields[k].textContent = k === 'id' ? molds[mi][k] : t(molds[mi][k]); });
+      if (curStep === 4 && !card.classList.contains('sent')) renderSummary();
+      if (card.classList.contains('sent')) document.getElementById('done-route').innerHTML = lastRoutes.length ? chipsHtml(lastRoutes, '') : '';
+      if (!sendBtn.disabled) sendBtn.firstChild.textContent = t('Invia richiesta') + ' ';
+    };
+    updateLiveRoute();
+    setLang(LANG, false);
+  })();
   </script>
 
   <!-- Vercel Web Analytics -->

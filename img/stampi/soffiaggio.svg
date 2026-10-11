@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<rect class="f" x="360" y="24" width="80" height="34" rx="3"/><text class="t" x="452" y="46">ESTRUSORE</text>
+<path class="s" d="M384 58 V360 Q400 376 416 360 V58"/>
+<rect class="f" x="150" y="100" width="170" height="300" rx="4"/>
+<path class="s" d="M320 120 H300 V160 Q250 180 250 230 V368 Q250 380 262 380 H320"/>
+<rect class="f" x="480" y="100" width="170" height="300" rx="4"/>
+<path class="s" d="M480 120 H500 V160 Q550 180 550 230 V368 Q550 380 538 380 H480"/>
+<path d="M90 250 H140 M128 242 L140 250 L128 258 M710 250 H660 M672 242 L660 250 L672 258"/>
+<text class="t" x="364" y="404">PARISON</text>
+<text class="t" x="40" y="446">TR · TAV. 06 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">SOFFIAGGIO</text>
+</svg>

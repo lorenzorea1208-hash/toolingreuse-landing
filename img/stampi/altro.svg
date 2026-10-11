@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<path class="thin" d="M230 80 H570 M230 70 V90 M570 70 V90 M600 110 V360 M590 110 H610 M590 360 H610"/>
+<text class="t" x="364" y="64">L ? mm</text><text class="t" x="618" y="240">H ? mm</text>
+<rect class="f" x="230" y="110" width="340" height="250" rx="4"/>
+<rect class="d" x="270" y="150" width="260" height="170" rx="2"/>
+<circle class="s" cx="400" cy="235" r="44"/><text class="th" x="387" y="251" style="font-size:44px">?</text>
+<text class="t" x="40" y="446">TR · TAV. 11 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">ALTRO STAMPO</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<path class="f" d="M180 30 L300 30 L318 44 Q300 96 240 96 Q186 96 180 30 Z"/><path d="M180 40 H110"/>
+<path class="d" d="M318 44 Q370 60 398 104"/>
+<path class="s" d="M372 104 H428 L412 150 H388 Z"/>
+<rect x="332" y="130" width="22" height="20"/><rect x="446" y="130" width="22" height="20"/>
+<rect class="f" x="270" y="150" width="130" height="240" rx="3"/><rect class="f" x="400" y="150" width="130" height="240" rx="3"/>
+<path class="d" d="M400 120 V410"/>
+<path class="s" d="M330 200 H470 V260 Q470 300 430 300 V350 H370 V300 Q330 300 330 260 Z"/>
+<path d="M300 390 H500 M400 390 V416"/><circle cx="400" cy="424" r="8"/>
+<text class="t" x="440" y="98">BACINO DI COLATA</text><text class="t" x="546" y="270">CONCHIGLIA</text>
+<text class="t" x="40" y="446">TR · TAV. 10 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">FUSIONE IN CONCHIGLIA / GRAVITÀ</text>
+</svg>

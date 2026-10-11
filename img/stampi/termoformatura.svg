@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<rect class="f" x="200" y="40" width="400" height="34" rx="3"/>
+<path class="s" d="M220,48 L240,66 L260,48 L280,66 L300,48 L320,66 L340,48 L360,66 L380,48 L400,66 L420,48 L440,66 L460,48 L480,66 L500,48 L520,66 L540,48 L560,66 L580,48"/>
+<path class="thin" d="M300 88 q8 10 0 20 q-8 10 0 20 M400 88 q8 10 0 20 q-8 10 0 20 M500 88 q8 10 0 20 q-8 10 0 20"/>
+<path class="s" d="M180 150 Q400 236 620 150"/><path d="M180 158 Q400 244 620 158"/>
+<rect class="f" x="160" y="140" width="34" height="26"/><rect class="f" x="606" y="140" width="34" height="26"/>
+<path class="f" d="M300 362 V292 Q300 262 330 262 H470 Q500 262 500 292 V362 Z"/>
+<circle class="s" cx="340" cy="268" r="3"/><circle class="s" cx="370" cy="268" r="3"/><circle class="s" cx="400" cy="268" r="3"/><circle class="s" cx="430" cy="268" r="3"/><circle class="s" cx="460" cy="268" r="3"/>
+<rect class="f" x="220" y="362" width="360" height="36" rx="3"/>
+<path class="s" d="M320 404 V430 M312 422 L320 430 L328 422 M480 404 V430 M472 422 L480 430 L488 422"/><text class="t" x="500" y="428">VUOTO</text>
+<text class="t" x="612" y="62">RISCALDATORI</text><text class="t" x="650" y="158">LASTRA</text>
+<text class="t" x="40" y="446">TR · TAV. 05 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">TERMOFORMATURA</text>
+</svg>

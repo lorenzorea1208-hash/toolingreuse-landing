@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<path class="s" d="M400 6 V44 M388 32 L400 44 L412 32" stroke-width="3"/>
+<path class="f" d="M230 56 H570 V200 H500 Q480 160 440 160 H360 Q320 160 300 200 H230 Z"/>
+<path class="f" d="M230 420 H570 V282 H500 Q480 322 440 322 H360 Q320 322 300 282 H230 Z"/>
+<rect class="s" x="330" y="214" width="140" height="54" rx="22" style="fill:rgba(191,216,240,.18)"/>
+<path class="thin" d="M230 241 H300 M500 241 H570"/>
+<path class="thin" d="M380 204 q6 -8 0 -16 M400 204 q6 -8 0 -16 M420 204 q6 -8 0 -16"/>
+<text class="t" x="590" y="130">STAMPO SUPERIORE</text><text class="t" x="590" y="246">BAVA</text><text class="t" x="590" y="360">STAMPO INFERIORE</text>
+<text class="t" x="40" y="446">TR · TAV. 09 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">FORGIATURA · STAMPAGGIO A CALDO</text>
+</svg>

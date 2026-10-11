@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<rect class="f" x="260" y="70" width="300" height="175" rx="4"/>
+<rect class="f" x="260" y="265" width="300" height="175" rx="4"/>
+<path class="d" d="M200 255 H640"/><text class="t" x="650" y="260">P.L.</text>
+<path class="s" d="M340 245 V205 L372 172 H448 L480 205 V245"/>
+<path class="s" d="M352 265 V292 L380 318 H440 L468 292 V265" opacity=".6"/>
+<rect x="100" y="216" width="170" height="34" rx="4"/><rect class="f" x="122" y="222" width="46" height="22" rx="2"/>
+<path d="M40 233 H122"/><path class="s" d="M270 233 H340"/>
+<path class="s" d="M150 280 H230 M218 272 L230 280 L218 288"/>
+<text class="t" x="100" y="205">CAMERA DI INIEZIONE</text>
+<path d="M560 150 L630 168 V222 L560 240"/><path class="thin" d="M575 140 L615 250"/>
+<circle cx="300" cy="110" r="8"/><circle cx="520" cy="110" r="8"/><circle cx="300" cy="400" r="8"/><circle cx="520" cy="400" r="8"/>
+<path class="d" d="M308 110 H512 M308 400 H512"/>
+<text class="t" x="40" y="446">TR · TAV. 02 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">PRESSOFUSIONE</text>
+</svg>

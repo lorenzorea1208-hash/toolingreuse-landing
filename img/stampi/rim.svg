@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<rect class="thin" x="170" y="150" width="460" height="250" rx="4"/>
+<rect class="f" x="200" y="180" width="400" height="95" rx="3"/>
+<rect class="f" x="200" y="285" width="400" height="95" rx="3"/>
+<path class="d" d="M150 280 H650"/>
+<path class="s" d="M260 280 V250 Q260 236 274 236 H520 Q540 236 546 250 L560 280"/>
+<path class="s" d="M270 285 V300 Q270 314 284 314 H516 Q534 314 540 300 L548 285" opacity=".6"/>
+<rect class="f" x="250" y="60" width="110" height="64" rx="4"/>
+<path class="s" d="M305 124 V236"/>
+<path d="M140 78 H250 M140 106 H250"/>
+<text class="th" x="116" y="83">A</text><text class="th" x="116" y="111">B</text>
+<text class="t" x="372" y="96">TESTA DI MISCELAZIONE</text>
+<path class="thin" d="M556 236 L600 200"/><text class="t" x="606" y="198">SFIATO</text>
+<text class="t" x="40" y="446">TR · TAV. 08 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">RIM · POLIURETANO</text>
+</svg>

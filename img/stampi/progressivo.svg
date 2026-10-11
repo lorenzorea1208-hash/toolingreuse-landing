@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<rect class="f" x="80" y="80" width="640" height="56" rx="3"/>
+<rect class="f" x="150" y="136" width="24" height="116"/><rect class="f" x="270" y="136" width="24" height="116"/><rect class="f" x="390" y="136" width="24" height="116"/><rect class="f" x="510" y="136" width="24" height="116"/><rect class="f" x="630" y="136" width="24" height="116"/>
+<rect class="f s" x="30" y="262" width="740" height="8"/>
+<path class="s" d="M40 236 H120 M108 228 L120 236 L108 244"/><text class="t" x="132" y="241">AVANZAMENTO</text>
+<circle class="s" cx="162" cy="266" r="3"/><rect class="s" x="272" y="262" width="20" height="8"/>
+<path class="s" d="M380 262 L392 250 H414 L426 262"/><path class="s" d="M498 262 Q522 232 546 262"/>
+<path class="s" d="M628 290 L660 296 M644 300 V326 M636 318 L644 326 L652 318"/>
+<rect class="f" x="80" y="300" width="640" height="64" rx="3"/>
+<path class="d" d="M210 300 V364 M330 300 V364 M450 300 V364 M570 300 V364"/>
+<path class="thin" d="M100 136 V262 M700 136 V262"/>
+<text class="t" x="118" y="398">01 FORO</text><text class="t" x="232" y="398">02 TACCA</text><text class="t" x="352" y="398">03 PIEGA</text><text class="t" x="472" y="398">04 FORMA</text><text class="t" x="590" y="398">05 TAGLIO</text>
+<text class="t" x="40" y="446">TR · TAV. 04 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">LAMIERA · STAMPO PROGRESSIVO</text>
+</svg>

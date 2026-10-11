@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<path class="s" d="M400 14 V52 M390 40 L400 52 L410 40"/>
+<rect class="f" x="180" y="60" width="440" height="50" rx="3"/>
+<rect x="300" y="110" width="200" height="30"/>
+<rect class="f" x="360" y="140" width="80" height="80"/>
+<rect x="260" y="214" width="280" height="18"/>
+<rect class="f s" x="120" y="240" width="560" height="7"/>
+<rect class="f" x="260" y="255" width="98" height="50"/><rect class="f" x="442" y="255" width="98" height="50"/>
+<rect class="f" x="180" y="305" width="440" height="60" rx="3"/>
+<path class="thin" d="M362 305 V365 M438 305 V365"/>
+<rect x="200" y="110" width="18" height="195" rx="3"/><rect x="582" y="110" width="18" height="195" rx="3"/>
+<path class="thin" d="M440 180 L625 135"/><text class="t" x="630" y="132">PUNZONE</text>
+<text class="t" x="690" y="249">LAMIERA</text>
+<path class="thin" d="M540 280 L625 295"/><text class="t" x="630" y="300">MATRICE</text>
+<text class="t" x="40" y="446">TR · TAV. 03 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">LAMIERA · TRANCIATURA / PIEGATURA / IMBUTITURA</text>
+</svg>

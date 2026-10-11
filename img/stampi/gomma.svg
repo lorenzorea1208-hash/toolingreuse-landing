@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none" stroke="#7FA6CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<defs><style>.s{stroke:#BFD8F0}.f{fill:rgba(127,166,204,.10)}.d{stroke:#BFD8F0;stroke-width:1.5;stroke-dasharray:6 6}.thin{stroke:rgba(127,166,204,.6);stroke-width:1.2}.t{fill:#97A4AE;stroke:none;font:500 14px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1px}.th{fill:#BFD8F0;stroke:none;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:1.5px}</style></defs>
+<path class="s" d="M400 4 V26 M392 18 L400 26 L408 18"/>
+<rect class="f" x="150" y="30" width="500" height="30" rx="3"/>
+<rect class="f" x="190" y="80" width="420" height="124" rx="3"/>
+<rect class="f" x="190" y="206" width="420" height="124" rx="3"/>
+<path class="d" d="M150 205 H650"/>
+<ellipse class="s" cx="250" cy="205" rx="24" ry="13"/><ellipse class="s" cx="325" cy="205" rx="24" ry="13"/><ellipse class="s" cx="400" cy="205" rx="24" ry="13"/><ellipse class="s" cx="475" cy="205" rx="24" ry="13"/><ellipse class="s" cx="550" cy="205" rx="24" ry="13"/>
+<ellipse class="thin" cx="400" cy="205" rx="34" ry="20"/>
+<circle cx="230" cy="140" r="7"/><circle cx="570" cy="140" r="7"/><circle cx="230" cy="270" r="7"/><circle cx="570" cy="270" r="7"/>
+<path class="d" d="M237 140 H563 M237 270 H563"/>
+<rect class="f" x="150" y="350" width="500" height="30" rx="3"/>
+<path class="s" d="M400 410 V386 M392 394 L400 386 L408 394"/>
+<text class="t" x="660" y="210">CAVITÀ</text>
+<text class="t" x="40" y="446">TR · TAV. 07 · VISTA IN SEZIONE</text>
+<text class="th" x="40" y="472">GOMMA · COMPRESSIONE</text>
+</svg>
